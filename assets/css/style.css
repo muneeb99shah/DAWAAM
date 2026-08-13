@@ -1,0 +1,1024 @@
+/* ==========================================================================
+   DAWAAM - Local-First Business Continuity System
+   Unified Premium Design System, Palette & Standardized Typography
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    /* Centralized Typography System Tokens */
+    --dw-font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --dw-font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+
+    /* Standardized Typography Scale */
+    --dw-fs-3xs: 0.6875rem; /* 11px */
+    --dw-fs-xxs: 0.75rem;   /* 12px */
+    --dw-fs-xs: 0.8125rem;  /* 13px */
+    --dw-fs-sm: 0.875rem;   /* 14px */
+    --dw-fs-base: 0.9375rem;/* 15px */
+    --dw-fs-md: 1rem;       /* 16px */
+    --dw-fs-lg: 1.125rem;   /* 18px */
+    --dw-fs-xl: 1.25rem;    /* 20px */
+    --dw-fs-2xl: 1.5rem;    /* 24px */
+    --dw-fs-3xl: 1.75rem;   /* 28px */
+    --dw-fs-4xl: 2rem;      /* 32px */
+
+    /* Standardized Font Weights */
+    --dw-fw-regular: 400;
+    --dw-fw-medium: 500;
+    --dw-fw-semibold: 600;
+    --dw-fw-bold: 700;
+    --dw-fw-extrabold: 800;
+
+    /* Line Heights */
+    --dw-lh-tight: 1.25;
+    --dw-lh-normal: 1.5;
+    --dw-lh-relaxed: 1.625;
+
+    /* Core Brand Colors */
+    --dw-emerald-primary: #059669;
+    --dw-emerald-hover: #047857;
+    --dw-emerald-active: #065f46;
+    --dw-emerald-light: #ecfdf5;
+    --dw-emerald-border: #a7f3d0;
+    
+    /* Dark Slate Palette */
+    --dw-slate-dark: #0f172a;
+    --dw-slate-header: #1e293b;
+    --dw-slate-muted: #475569;
+    --dw-slate-light: #f8fafc;
+    --dw-slate-border: #e2e8f0;
+    
+    /* Accent Status Colors */
+    --dw-amber: #f59e0b;
+    --dw-amber-bg: #fffbeb;
+    --dw-rose: #ef4444;
+    --dw-rose-bg: #fef2f2;
+    --dw-sky: #0284c7;
+    --dw-sky-bg: #f0f9ff;
+    
+    /* Global Surface & Shadows */
+    --dw-bg-body: #f8fafc;
+    --dw-text-main: #0f172a;
+    --dw-text-sub: #475569;
+    --dw-card-bg: #ffffff;
+    
+    --dw-shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+    --dw-shadow-sm: 0 2px 4px -1px rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    --dw-shadow-md: 0 6px 12px -2px rgba(15, 23, 42, 0.08), 0 3px 6px -3px rgba(15, 23, 42, 0.04);
+    --dw-shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.12), 0 6px 12px -6px rgba(15, 23, 42, 0.06);
+    
+    --dw-radius-sm: 6px;
+    --dw-radius-md: 10px;
+    --dw-radius-lg: 14px;
+    --dw-radius-pill: 50px;
+    
+    --dw-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global Base Typography & Body */
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-sm);
+    font-weight: var(--dw-fw-regular);
+    line-height: var(--dw-lh-normal);
+    background-color: var(--dw-bg-body);
+    color: var(--dw-text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+/* Monospace Code & Data Class Override */
+.font-monospace, code, kbd, pre, samp {
+    font-family: var(--dw-font-mono) !important;
+}
+
+/* Standardized Heading Hierarchy */
+h1, .h1 { font-family: var(--dw-font-sans); font-size: var(--dw-fs-4xl); font-weight: var(--dw-fw-extrabold); line-height: var(--dw-lh-tight); letter-spacing: -0.02em; color: var(--dw-slate-dark); margin-bottom: 0.5rem; }
+h2, .h2 { font-family: var(--dw-font-sans); font-size: var(--dw-fs-3xl); font-weight: var(--dw-fw-extrabold); line-height: var(--dw-lh-tight); letter-spacing: -0.015em; color: var(--dw-slate-dark); margin-bottom: 0.5rem; }
+h3, .h3 { font-family: var(--dw-font-sans); font-size: var(--dw-fs-2xl); font-weight: var(--dw-fw-bold); line-height: var(--dw-lh-tight); color: var(--dw-slate-dark); margin-bottom: 0.5rem; }
+h4, .h4 { font-family: var(--dw-font-sans); font-size: var(--dw-fs-xl); font-weight: var(--dw-fw-bold); line-height: var(--dw-lh-tight); color: var(--dw-slate-dark); margin-bottom: 0.5rem; }
+h5, .h5 { font-family: var(--dw-font-sans); font-size: var(--dw-fs-lg); font-weight: var(--dw-fw-semibold); line-height: var(--dw-lh-normal); color: var(--dw-slate-dark); margin-bottom: 0.5rem; }
+h6, .h6 { font-family: var(--dw-font-sans); font-size: var(--dw-fs-md); font-weight: var(--dw-fw-semibold); line-height: var(--dw-lh-normal); color: var(--dw-slate-dark); margin-bottom: 0.5rem; }
+
+p {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-sm);
+    line-height: var(--dw-lh-normal);
+}
+
+.lead {
+    font-size: var(--dw-fs-md);
+    font-weight: var(--dw-fw-regular);
+    line-height: var(--dw-lh-relaxed);
+}
+
+.small, small {
+    font-size: var(--dw-fs-xs);
+    line-height: var(--dw-lh-normal);
+}
+
+/* Icons Global Vertical Alignment */
+.bi {
+    vertical-align: -0.125em;
+    display: inline-block;
+}
+
+/* ==========================================================================
+   Header & Navigation Components
+   ========================================================================== */
+.dw-navbar {
+    background: var(--dw-slate-dark) !important;
+    border-bottom: 3px solid var(--dw-emerald-primary);
+    box-shadow: var(--dw-shadow-md);
+    padding: 0.75rem 1.5rem;
+}
+
+.dw-navbar-brand {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-xl);
+    font-weight: var(--dw-fw-extrabold);
+    letter-spacing: -0.01em;
+    color: #ffffff !important;
+}
+
+.dw-navbar-brand .dw-brand-badge {
+    background: var(--dw-emerald-primary);
+    color: #ffffff;
+    font-size: var(--dw-fs-3xs);
+    font-weight: var(--dw-fw-bold);
+    padding: 4px 10px;
+    border-radius: var(--dw-radius-pill);
+    vertical-align: middle;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.dw-nav-link {
+    font-family: var(--dw-font-sans);
+    color: #e2e8f0 !important;
+    font-size: var(--dw-fs-sm);
+    font-weight: var(--dw-fw-semibold);
+    padding: 0.5rem 0.85rem !important;
+    border-radius: var(--dw-radius-sm);
+    transition: var(--dw-transition);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+}
+
+.dropdown-menu {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-sm);
+    border-radius: var(--dw-radius-md);
+    box-shadow: var(--dw-shadow-lg);
+    border: 1px solid var(--dw-slate-border);
+}
+
+.dropdown-item {
+    font-size: var(--dw-fs-sm);
+    font-weight: var(--dw-fw-medium);
+    padding: 0.5rem 1rem;
+}
+
+.dw-user-btn {
+    max-width: 220px;
+}
+
+.dw-user-name-text {
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* LAN Server IP Badge */
+.dw-lan-server-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--dw-fs-xs);
+    font-weight: var(--dw-fw-medium);
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 6px 14px;
+    border-radius: var(--dw-radius-pill);
+    white-space: nowrap;
+}
+
+/* LAN & Network Status Badges */
+.dw-badge-lan {
+    background: #064e3b;
+    border: 1px solid #10b981;
+    color: #a7f3d0;
+    padding: 6px 14px;
+    border-radius: var(--dw-radius-pill);
+    font-size: var(--dw-fs-xs);
+    font-weight: var(--dw-fw-bold);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.dw-badge-offline {
+    background: #78350f;
+    border: 1px solid #f59e0b;
+    color: #fef3c7;
+    padding: 6px 14px;
+    border-radius: var(--dw-radius-pill);
+    font-size: var(--dw-fs-xs);
+    font-weight: var(--dw-fw-bold);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.dw-status-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+    box-shadow: 0 0 0 0 currentColor;
+    animation: pulse-ring 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@keyframes pulse-ring {
+    to {
+        box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+    }
+}
+
+/* ==========================================================================
+   Hero Banners & Standard Cards
+   ========================================================================== */
+.dw-hero-banner {
+    background: linear-gradient(135deg, var(--dw-emerald-hover) 0%, var(--dw-slate-dark) 100%);
+    color: #ffffff;
+    padding: 3rem 2.5rem;
+    border-radius: var(--dw-radius-lg);
+    box-shadow: var(--dw-shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.dw-card {
+    background: var(--dw-card-bg);
+    border: 1px solid var(--dw-slate-border);
+    border-radius: var(--dw-radius-md);
+    box-shadow: var(--dw-shadow-sm);
+    transition: var(--dw-transition);
+}
+
+.dw-card:hover {
+    box-shadow: var(--dw-shadow-md);
+}
+
+.dw-card-header {
+    background: var(--dw-slate-light);
+    border-bottom: 1px solid var(--dw-slate-border);
+    padding: 1rem 1.35rem;
+    font-size: var(--dw-fs-sm);
+    font-weight: var(--dw-fw-bold);
+    color: var(--dw-slate-dark);
+    border-top-left-radius: var(--dw-radius-md) !important;
+    border-top-right-radius: var(--dw-radius-md) !important;
+}
+
+/* Metric / KPI Stat Cards */
+.dw-stat-card {
+    border-left: 4px solid var(--dw-emerald-primary);
+    padding: 0.85rem 1.1rem;
+    background: #ffffff;
+    border-radius: var(--dw-radius-md);
+    box-shadow: var(--dw-shadow-sm);
+    border-top: 1px solid var(--dw-slate-border);
+    border-right: 1px solid var(--dw-slate-border);
+    border-bottom: 1px solid var(--dw-slate-border);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
+    text-decoration: none !important;
+}
+
+a.dw-stat-card {
+    cursor: pointer;
+}
+
+a.dw-stat-card:hover, .dw-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border-top-color: #cbd5e1;
+    border-right-color: #cbd5e1;
+    border-bottom-color: #cbd5e1;
+}
+
+.dw-stat-card.stat-amber {
+    border-left-color: var(--dw-amber);
+}
+
+.dw-stat-card.stat-rose {
+    border-left-color: var(--dw-rose);
+}
+
+.dw-stat-card.stat-emerald {
+    border-left-color: var(--dw-emerald-primary);
+}
+
+.dw-stat-card.stat-sky {
+    border-left-color: var(--dw-sky);
+}
+
+.dw-stat-label {
+    font-family: var(--dw-font-sans);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--dw-slate-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+}
+
+.dw-stat-value {
+    font-family: var(--dw-font-sans);
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--dw-slate-dark);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dw-stat-sub {
+    font-size: 0.72rem;
+    color: var(--dw-slate-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* ==========================================================================
+   Standardized Buttons & Controls
+   ========================================================================== */
+.btn {
+    font-family: var(--dw-font-sans);
+    border-radius: 8px;
+    font-weight: var(--dw-fw-semibold);
+    padding: 0.5rem 1.25rem;
+    font-size: var(--dw-fs-sm);
+    line-height: 1.4;
+    transition: var(--dw-transition);
+    white-space: nowrap;
+}
+
+.btn-sm {
+    font-size: var(--dw-fs-xs);
+    padding: 0.4rem 0.85rem;
+}
+
+.btn-lg {
+    font-size: var(--dw-fs-md);
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-dw-primary {
+    background-color: var(--dw-emerald-primary);
+    border-color: var(--dw-emerald-primary);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+    white-space: nowrap;
+}
+
+.btn-dw-primary:hover, .btn-dw-primary:focus {
+    background-color: var(--dw-emerald-hover);
+    border-color: var(--dw-emerald-hover);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.btn-dw-outline {
+    background-color: transparent;
+    border: 2px solid var(--dw-emerald-primary);
+    color: var(--dw-emerald-primary);
+}
+
+.btn-dw-outline:hover {
+    background-color: var(--dw-emerald-primary);
+    color: #ffffff;
+}
+
+.btn-success {
+    background-color: var(--dw-emerald-primary);
+    border-color: var(--dw-emerald-primary);
+}
+
+.btn-success:hover {
+    background-color: var(--dw-emerald-hover);
+    border-color: var(--dw-emerald-hover);
+}
+
+/* ==========================================================================
+   Form Components & Compact Filter Toolbar
+   ========================================================================== */
+.dw-filter-card {
+    background: #ffffff;
+    border: 1px solid var(--dw-slate-border);
+    border-radius: var(--dw-radius-md);
+    padding: 0.6rem 0.85rem !important;
+    margin-bottom: 1.15rem !important;
+    box-shadow: var(--dw-shadow-sm);
+}
+
+.dw-filter-card .form-control,
+.dw-filter-card .form-select,
+.dw-filter-card .input-group-text,
+.dw-filter-card .btn {
+    font-size: 0.8125rem !important;
+    padding-top: 0.3rem !important;
+    padding-bottom: 0.3rem !important;
+    border-radius: 6px;
+}
+
+.dw-filter-card .input-group-text {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    color: var(--dw-slate-muted);
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+}
+
+.form-control, .form-select, textarea {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-sm);
+    font-weight: var(--dw-fw-regular);
+    line-height: var(--dw-lh-normal);
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    padding: 0.55rem 0.85rem;
+    color: var(--dw-slate-dark);
+    background-color: #ffffff;
+    transition: var(--dw-transition);
+}
+
+.form-control:focus, .form-select:focus, textarea:focus {
+    border-color: var(--dw-emerald-primary);
+    box-shadow: 0 0 0 0.2rem rgba(5, 150, 105, 0.2);
+}
+
+.form-control::placeholder {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-sm);
+    font-weight: var(--dw-fw-regular);
+    color: #94a3b8;
+}
+
+.form-label {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-xs);
+    font-weight: var(--dw-fw-semibold);
+    color: var(--dw-slate-muted);
+    margin-bottom: 0.35rem;
+}
+
+.form-text, .invalid-feedback, .valid-feedback {
+    font-size: var(--dw-fs-xxs);
+    font-weight: var(--dw-fw-regular);
+    line-height: var(--dw-lh-normal);
+}
+
+/* ==========================================================================
+   Tables & Data Presentation
+   ========================================================================== */
+.table {
+    font-family: var(--dw-font-sans);
+    font-size: 0.8125rem;
+    color: var(--dw-slate-dark);
+    border-color: var(--dw-slate-border);
+}
+
+.table th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--dw-slate-muted);
+    background-color: var(--dw-slate-light);
+    padding: 0.55rem 0.75rem;
+    border-bottom: 2px solid var(--dw-slate-border);
+    white-space: nowrap;
+}
+
+.table-dark th,
+thead.table-dark th,
+.table .table-dark th,
+.dw-table-dark-header th {
+    background-color: var(--dw-slate-dark) !important;
+    color: #ffffff !important;
+}
+
+.table td {
+    font-size: 0.8125rem;
+    font-weight: var(--dw-fw-regular);
+    line-height: 1.4;
+    padding: 0.5rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(5, 150, 105, 0.03) !important;
+}
+
+/* Badges */
+.badge {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-xxs);
+    font-weight: var(--dw-fw-semibold);
+    padding: 0.45em 0.8em;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+}
+
+/* Alerts & Toast Notifications */
+.alert {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-sm);
+    line-height: var(--dw-lh-normal);
+    border-radius: var(--dw-radius-md);
+}
+
+.modal-title {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-lg);
+    font-weight: var(--dw-fw-bold);
+}
+
+.modal-body {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-sm);
+    line-height: var(--dw-lh-normal);
+}
+
+/* ==========================================================================
+   High Contrast Footer
+   ========================================================================== */
+.dw-footer {
+    font-family: var(--dw-font-sans);
+    font-size: var(--dw-fs-sm);
+    line-height: var(--dw-lh-normal);
+    background: #090e1a;
+    color: #cbd5e1;
+    padding: 3.5rem 0 1.5rem 0;
+    margin-top: auto;
+    border-top: 3px solid var(--dw-emerald-primary);
+}
+
+.dw-footer h5, .dw-footer h6 {
+    color: #ffffff !important;
+    font-weight: var(--dw-fw-bold);
+}
+
+.dw-footer p, .dw-footer .small {
+    color: #94a3b8 !important;
+}
+
+.dw-footer a {
+    color: #e2e8f0;
+    text-decoration: none;
+    transition: var(--dw-transition);
+}
+
+.dw-footer a:hover {
+    color: #34d399;
+}
+
+.dw-footer-box {
+    background: #111c30;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 1.25rem;
+}
+
+.dw-footer-box .status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dw-footer-box .status-row:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 1199.98px) {
+    .navbar-collapse {
+        background: #0f172a;
+        padding: 1.25rem;
+        border-radius: 12px;
+        margin-top: 0.75rem;
+        border: 1px solid #1e293b;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .dw-nav-link {
+        width: 100%;
+        padding: 0.65rem 1rem !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .dw-user-btn {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    .dw-user-name-text {
+        max-width: 100% !important;
+    }
+    .dw-lan-server-badge, .dw-badge-lan {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 992px) {
+    .dw-hero-banner {
+        padding: 2.25rem 1.5rem;
+    }
+    .dw-hero-banner h1 {
+        font-size: 1.85rem;
+    }
+    .dw-stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .dw-hero-banner {
+        padding: 1.75rem 1.25rem;
+    }
+    .dw-card {
+        padding: 1rem !important;
+    }
+    .dw-card-header {
+        padding: 0.85rem 1rem;
+    }
+    .btn {
+        padding: 0.45rem 1rem;
+        font-size: var(--dw-fs-xs);
+    }
+    .table th, .table td {
+        padding: 0.65rem 0.75rem;
+    }
+}
+
+/* ==========================================================================
+   Compact Icon-Only Quick Access Sidebar & Hover Tooltips
+   ========================================================================== */
+.dw-quick-sidebar-compact {
+    background: #ffffff;
+    border: 1px solid var(--dw-slate-border);
+    border-radius: var(--dw-radius-md);
+    box-shadow: var(--dw-shadow-sm);
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.65rem 0;
+    margin-bottom: 1.5rem;
+    position: sticky;
+    top: 1rem;
+    z-index: 100;
+}
+
+.dw-sidebar-compact-link {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--dw-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dw-slate-body);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: var(--dw-transition);
+    position: relative;
+    margin-bottom: 0.4rem;
+}
+
+.dw-sidebar-compact-link:hover {
+    background: var(--dw-slate-light);
+    color: var(--dw-emerald-hover);
+}
+
+.dw-sidebar-compact-link.active {
+    background: var(--dw-emerald-hover);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
+/* Hover Tooltip Label */
+.dw-sidebar-compact-link .dw-tooltip-label {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%) translateX(8px);
+    background: #0f172a;
+    color: #ffffff;
+    padding: 0.45rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    z-index: 1050;
+}
+
+/* Tooltip Arrow */
+.dw-sidebar-compact-link .dw-tooltip-label::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #0f172a transparent transparent;
+}
+
+.dw-sidebar-compact-link:hover .dw-tooltip-label {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(12px);
+}
+
+/* ==========================================================================
+   Design System Standards & Accessibility Enhancements
+   ========================================================================== */
+
+/* Accessibility Focus Visible Ring */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--dw-emerald-primary) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
+}
+
+/* Page Title & Subtext Standards */
+.dw-page-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--dw-slate-dark);
+    margin-bottom: 0.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dw-page-sub {
+    font-size: 0.8125rem;
+    color: var(--dw-slate-muted);
+    margin-bottom: 0;
+}
+
+/* Standardized Empty State Component */
+.dw-empty-state {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    background: #ffffff;
+    border-radius: var(--dw-radius-md);
+}
+
+.dw-empty-state-icon {
+    font-size: 2.75rem;
+    color: #cbd5e1;
+    margin-bottom: 0.85rem;
+}
+
+.dw-empty-state-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dw-slate-dark);
+    margin-bottom: 0.35rem;
+}
+
+.dw-empty-state-text {
+    font-size: 0.8125rem;
+    color: var(--dw-slate-muted);
+    max-width: 420px;
+    margin: 0 auto 1.25rem auto;
+}
+
+/* Standardized Table Action Buttons */
+.btn-table-action {
+    min-height: 30px;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    line-height: 1.2;
+}
+
+/* Modal Header Standardization */
+.modal-header.dw-modal-header {
+    background: #0f172a;
+    color: #ffffff;
+    border-bottom: 1px solid #1e293b;
+    padding: 1rem 1.25rem;
+}
+
+.modal-header.dw-modal-header .modal-title {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.modal-header.dw-modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Flexbox Boundary & Layout Overflow Utilities */
+.min-w-0 {
+    min-width: 0 !important;
+}
+
+/* Contained Table Responsive Scrolling */
+.dw-card .table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.dw-card .table-responsive > table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+/* Custom Compact Professional Permission Toggle Switch */
+.form-check-input.dw-permission-switch {
+    width: 2.15rem !important;
+    height: 1.15rem !important;
+    background-color: #cbd5e1;
+    border-color: #94a3b8;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e");
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, background-position 0.2s ease-in-out;
+    box-shadow: none !important;
+    vertical-align: middle;
+}
+
+.form-check-input.dw-permission-switch:checked {
+    background-color: var(--dw-emerald-primary, #059669) !important;
+    border-color: #047857 !important;
+}
+
+.form-check-input.dw-permission-switch:focus {
+    outline: 2px solid var(--dw-emerald-primary) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2) !important;
+}
+
+/* ==========================================================================
+   DAWAAM - Universal Business Printing Engine & Paper Size System
+   ========================================================================== */
+
+/* Universal Hide for Non-Print Elements */
+@media print {
+    .dw-navbar, .dw-footer, .no-print, .btn, .alert, .dw-sidebar, header, nav, footer {
+        display: none !important;
+    }
+    
+    html, body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        box-shadow: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .dw-card, .receipt-box, .invoice-box, .challan-box, .print-box {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Page-Break Controls to Avoid Trailing Blank Pages */
+    .print-avoid-break, table tr, .dw-card {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    h1, h2, h3, h4, h5, h6, .border-bottom, table {
+        page-break-after: avoid;
+    }
+}
+
+/* Document Paper Format Containers (Screen & Print Preview) */
+.paper-format-80mm {
+    max-width: 80mm;
+    margin: 0 auto;
+    font-size: 12px;
+    padding: 12px !important;
+}
+
+.paper-format-58mm {
+    width: 58mm !important;
+    max-width: 58mm !important;
+    margin: 0 auto !important;
+    font-size: 10px !important;
+    padding: 5px !important;
+}
+
+.paper-format-58mm h4, .paper-format-58mm h5,
+.paper-format-58mm .fs-4, .paper-format-58mm .fs-5 {
+    font-size: 0.85rem !important;
+    margin-bottom: 2px !important;
+}
+
+.paper-format-58mm table th {
+    font-size: 0.625rem !important;
+    padding: 2px 1px !important;
+}
+
+.paper-format-58mm table td {
+    font-size: 0.68rem !important;
+    padding: 2px 1px !important;
+}
+
+.paper-format-58mm .p-2, .paper-format-58mm .p-3 {
+    padding: 4px 6px !important;
+}
+
+.paper-format-58mm .my-2 {
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+}
+
+.paper-format-58mm .receipt-meta-val {
+    font-size: 0.62rem !important;
+    word-break: break-all !important;
+    line-height: 1.2 !important;
+}
+
+.paper-format-58mm .total-payable-label {
+    font-size: 0.7rem !important;
+    white-space: nowrap !important;
+}
+
+.paper-format-58mm .total-payable-amount {
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+}
+
+.paper-format-80mm table, .paper-format-58mm table {
+    table-layout: fixed !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.paper-format-80mm td, .paper-format-80mm th,
+.paper-format-58mm td, .paper-format-58mm th {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.paper-format-a4 {
+    max-width: 210mm;
+    margin: 0 auto;
+}
+
+.paper-format-a5 {
+    max-width: 148mm;
+    margin: 0 auto;
+}
+
+.paper-format-challan {
+    max-width: 210mm;
+    margin: 0 auto;
+}

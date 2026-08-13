@@ -1,0 +1,8 @@
+{
+    "gateway_mode": "android_app",
+    "gateway_url": "http:\/\/192.168.108.55:8080\/send",
+    "api_token": "dawaam_secret_token_2026",
+    "recipient_phone": "+923138388108",
+    "max_retries": 3,
+    "last_updated": "2026-08-10 19:41:24"
+}

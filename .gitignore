@@ -1,0 +1,39 @@
+# Dawaam Local Business Continuity System - Git Ignore Rules
+
+# Explicitly exclude standalone guide text file
+DAWAAM_GUIDE.txt
+
+# Development Scratch Scripts & Temporary Logs
+scratch/
+*.log
+*.tmp
+tmp/
+
+# Uploaded Media & Cache Directories
+uploads/cache/
+uploads/temp/
+
+# Sensitive Environment Configurations & Secrets
+.env
+.env.local
+.env.*.local
+config/config.local.php
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Code Editor Files
+.vscode/
+.idea/
+*.suo
+*.user
+*.useros scaffolding
+*.swp
+*.swo
+
+# Local Backups & Archive Bundles
+*.zip
+*.tar.gz
+*.bak
