@@ -260,7 +260,9 @@ INSERT INTO `permissions` (`id`, `module`, `action`, `permission_key`, `descript
 (14, 'users', 'disable', 'users.disable', 'Disable staff accounts'),
 (15, 'sync', 'view', 'sync.view', 'View offline sync status'),
 (16, 'sync', 'manage', 'sync.manage', 'Execute sync and resolve conflicts'),
-(17, 'reports', 'view', 'reports.view', 'Access executive reports');
+(17, 'reports', 'view', 'reports.view', 'Access executive reports'),
+(18, 'conflicts', 'view', 'conflicts.view', 'View sync conflict logs'),
+(19, 'conflicts', 'resolve', 'conflicts.resolve', 'Resolve data sync conflicts');
 
 -- Role Permission Maps (Super Admin gets all)
 INSERT INTO `role_permissions` (`role_id`, `permission_id`)

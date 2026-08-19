@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $norm_phone = normalize_phone_number($raw_phone);
             if (empty($norm_phone) || strlen($norm_phone) < 11) {
-                $errors[] = "Invalid phone number format: '{$raw_phone}'. Please enter a valid number (e.g. 03138388108).";
+                $errors[] = "Invalid phone number format: '{$raw_phone}'. Please enter a valid number (e.g. 03000000000).";
             }
 
             // Duplicate Check

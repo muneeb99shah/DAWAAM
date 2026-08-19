@@ -20,24 +20,32 @@ $stat_in_stock = $pdo->query("SELECT COUNT(*) FROM products WHERE stock_qty > lo
 $stat_low = $pdo->query("SELECT COUNT(*) FROM products WHERE stock_qty <= low_stock_threshold AND stock_qty > 0")->fetchColumn();
 $stat_out = $pdo->query("SELECT COUNT(*) FROM products WHERE stock_qty = 0")->fetchColumn();
 
-// Query Products based on Filter
-$where_sql = "";
+// Query Products based on Filter with High-Performance Server-Side Pagination
+$where_clauses = [];
+$params = [];
+
 if ($filter_status === 'low') {
-    $where_sql = "WHERE p.stock_qty <= p.low_stock_threshold AND p.stock_qty > 0";
+    $where_clauses[] = "p.stock_qty <= p.low_stock_threshold AND p.stock_qty > 0";
 } elseif ($filter_status === 'out') {
-    $where_sql = "WHERE p.stock_qty = 0";
+    $where_clauses[] = "p.stock_qty = 0";
 }
 
-$query = "
-    SELECT p.id, p.name, p.sku, p.price, p.stock_qty, p.low_stock_threshold, p.updated_at, c.name AS category_name
-    FROM products p
-    LEFT JOIN categories c ON p.category_id = c.id
-    {$where_sql}
-    ORDER BY (p.stock_qty <= p.low_stock_threshold) DESC, p.stock_qty ASC
-";
+$page = (int)($_GET['page'] ?? 1);
+$limit = (int)($_GET['limit'] ?? 15);
 
-$stmt = $pdo->query($query);
-$products = $stmt->fetchAll();
+$paginated_res = get_paginated_data($pdo, [
+    'table' => 'products p LEFT JOIN categories c ON p.category_id = c.id',
+    'select_fields' => 'p.id, p.name, p.sku, p.price, p.stock_qty, p.low_stock_threshold, p.updated_at, c.name AS category_name',
+    'where_clause' => count($where_clauses) > 0 ? implode(" AND ", $where_clauses) : '',
+    'params' => $params,
+    'order_by' => '(p.stock_qty <= p.low_stock_threshold) DESC, p.stock_qty ASC',
+    'page' => $page,
+    'limit' => $limit,
+    'count_field' => 'p.id'
+]);
+
+$products = $paginated_res['data'];
+$pagination = $paginated_res['pagination'];
 
 $page_title = "Inventory Stock Monitor";
 require_once __DIR__ . '/../../includes/header.php';
@@ -186,6 +194,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             </tbody>
                         </table>
                     </div>
+                    <?php echo render_pagination_links($pagination, 'index.php', ['filter' => $filter_status]); ?>
                 <?php else: ?>
                     <div class="p-5 text-center text-muted">
                         <i class="bi bi-box-seam fs-1 d-block mb-3 text-secondary"></i>

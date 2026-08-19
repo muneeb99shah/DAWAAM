@@ -67,27 +67,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_u->execute([':new_stock' => $new_stock, ':id' => $product_id]);
 
             // Queue for Cloud WAN Sync
-            log_data_change('products', $product_id, 'UPDATE', [
-                'id' => $product_id,
-                'name' => $target_product['name'],
-                'stock_qty' => $new_stock,
-                'previous_stock' => $old_stock,
-                'adjustment_type' => $adj_type,
-                'notes' => $notes
-            ]);
+            queue_sync_record('products', $product_id, 'UPDATE');
 
             // Log Audit Entry
             $audit_msg = "Stock adjustment for '{$target_product['name']}' ({$target_product['sku']}): {$old_stock} -> {$new_stock} ({$adj_type}). Notes: {$notes}";
             log_audit_action('STOCK_ADJUSTMENT', 'inventory', $product_id, $audit_msg);
 
             // Trigger Alert if below threshold
-            if ($new_stock <= (int)$target_product['low_stock_threshold']) {
-                trigger_urgent_alert('LOW_STOCK', "Low Stock Alert: '{$target_product['name']}' stock adjusted to {$new_stock} units (Threshold: {$target_product['low_stock_threshold']}).", [
-                    'product_id' => $product_id,
-                    'stock_qty' => $new_stock,
-                    'threshold' => $target_product['low_stock_threshold']
-                ]);
-            }
+            check_and_trigger_low_stock_alert($product_id);
 
             $pdo->commit();
 

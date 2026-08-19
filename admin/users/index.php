@@ -21,8 +21,8 @@ $stat_active = $pdo->query("SELECT COUNT(*) FROM users WHERE status = 'active'")
 $stat_inactive = $pdo->query("SELECT COUNT(*) FROM users WHERE status != 'active'")->fetchColumn();
 $stat_super_admin = $pdo->query("SELECT COUNT(*) FROM user_roles WHERE role_id = 1")->fetchColumn();
 
-// Auto-Suggest List for User Search
-$suggest_raw = $pdo->query("SELECT name FROM users UNION SELECT username FROM users UNION SELECT user_code FROM users")->fetchAll(PDO::FETCH_COLUMN);
+// Auto-Suggest List for User Search (Limited to top 50 entries for high performance)
+$suggest_raw = $pdo->query("(SELECT name FROM users ORDER BY name ASC LIMIT 20) UNION (SELECT username FROM users ORDER BY username ASC LIMIT 20) UNION (SELECT user_code FROM users ORDER BY user_code ASC LIMIT 10)")->fetchAll(PDO::FETCH_COLUMN);
 
 // Build Filter SQL
 $where_clauses = [];

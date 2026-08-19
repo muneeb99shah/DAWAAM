@@ -209,7 +209,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                         <?php if ($is_target_super_admin): ?>
                                             <span class="text-muted font-monospace" style="font-size: 0.68rem;">Super Admin Full Access</span>
                                         <?php else: ?>
-                                            <select name="overrides[<?php echo $m['id']; ?>]" class="form-select form-select-sm d-inline-block text-center fw-semibold" style="max-width: 165px; font-size: 0.72rem; height: 26px; padding: 1.5px 4px; line-height: 1.2;">
+                                            <select name="overrides[<?php echo $m['id']; ?>]" class="form-select form-select-sm d-inline-block text-center fw-semibold dw-override-select" style="max-width: 176px; font-size: 0.72rem; height: 26px; padding: 1.5px 22px 1.5px 6px; line-height: 1.2;">
                                                 <option value="DEFAULT" <?php echo $m['override_state'] === 'DEFAULT' ? 'selected' : ''; ?>>
                                                     INHERIT ROLE (Default)
                                                 </option>

@@ -12,11 +12,20 @@ require_permission('sales.view');
 
 $pdo = get_db_connection();
 
-// KPI Stats
-$stat_today_revenue = $pdo->query("SELECT COALESCE(SUM(total_price), 0) FROM sales WHERE DATE(sold_at) = CURRENT_DATE()")->fetchColumn();
-$stat_today_count = $pdo->query("SELECT COUNT(*) FROM sales WHERE DATE(sold_at) = CURRENT_DATE()")->fetchColumn();
-$stat_total_revenue = $pdo->query("SELECT COALESCE(SUM(total_price), 0) FROM sales")->fetchColumn();
-$stat_total_count = $pdo->query("SELECT COUNT(*) FROM sales")->fetchColumn();
+// KPI Stats (Single Aggregated Query using Indexable Date Range)
+$sales_kpi = $pdo->query("
+    SELECT 
+        COALESCE(SUM(total_price), 0) AS total_revenue,
+        COUNT(*) AS total_count,
+        COALESCE(SUM(CASE WHEN sold_at >= CURRENT_DATE() THEN total_price ELSE 0 END), 0) AS today_revenue,
+        COALESCE(SUM(CASE WHEN sold_at >= CURRENT_DATE() THEN 1 ELSE 0 END), 0) AS today_count
+    FROM sales
+")->fetch();
+
+$stat_today_revenue = $sales_kpi['today_revenue'];
+$stat_today_count = $sales_kpi['today_count'];
+$stat_total_revenue = $sales_kpi['total_revenue'];
+$stat_total_count = $sales_kpi['total_count'];
 
 // Search & Filter
 $search = trim($_GET['search'] ?? '');
@@ -31,8 +40,9 @@ if (!empty($search)) {
 }
 
 if (!empty($date_filter)) {
-    $where_clauses[] = "DATE(s.sold_at) = :date_filter";
-    $params[':date_filter'] = $date_filter;
+    $where_clauses[] = "s.sold_at >= :date_start AND s.sold_at <= :date_end";
+    $params[':date_start'] = $date_filter . ' 00:00:00';
+    $params[':date_end'] = $date_filter . ' 23:59:59';
 }
 
 $page = (int)($_GET['page'] ?? 1);

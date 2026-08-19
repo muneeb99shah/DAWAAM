@@ -16,6 +16,9 @@ $pdo = get_db_connection();
 $start_date = $_GET['start_date'] ?? date('Y-m-01'); // Default: Beginning of current month
 $end_date = $_GET['end_date'] ?? date('Y-m-d');      // Default: Today
 
+$start_ts = $start_date . ' 00:00:00';
+$end_ts = $end_date . ' 23:59:59';
+
 // 1. Overall Aggregated Metrics
 $stmt_agg = $pdo->prepare("
     SELECT 
@@ -24,9 +27,9 @@ $stmt_agg = $pdo->prepare("
         COALESCE(SUM(total_price), 0) AS total_revenue,
         COALESCE(AVG(total_price), 0) AS avg_receipt_value
     FROM sales
-    WHERE DATE(sold_at) BETWEEN :start_date AND :end_date
+    WHERE sold_at >= :start_ts AND sold_at <= :end_ts
 ");
-$stmt_agg->execute([':start_date' => $start_date, ':end_date' => $end_date]);
+$stmt_agg->execute([':start_ts' => $start_ts, ':end_ts' => $end_ts]);
 $agg = $stmt_agg->fetch();
 
 // 2. Top-Selling Products
@@ -35,12 +38,12 @@ $stmt_top = $pdo->prepare("
            SUM(s.quantity) AS units_sold, SUM(s.total_price) AS product_revenue
     FROM sales s
     INNER JOIN products p ON s.product_id = p.id
-    WHERE DATE(s.sold_at) BETWEEN :start_date AND :end_date
+    WHERE s.sold_at >= :start_ts AND s.sold_at <= :end_ts
     GROUP BY s.product_id, p.name, p.sku
     ORDER BY product_revenue DESC
     LIMIT 5
 ");
-$stmt_top->execute([':start_date' => $start_date, ':end_date' => $end_date]);
+$stmt_top->execute([':start_ts' => $start_ts, ':end_ts' => $end_ts]);
 $top_products = $stmt_top->fetchAll();
 
 // 3. Daily Breakdown List
@@ -50,11 +53,11 @@ $stmt_daily = $pdo->prepare("
            SUM(quantity) AS units_sold,
            SUM(total_price) AS daily_revenue
     FROM sales
-    WHERE DATE(sold_at) BETWEEN :start_date AND :end_date
+    WHERE sold_at >= :start_ts AND sold_at <= :end_ts
     GROUP BY DATE(sold_at)
     ORDER BY sale_date DESC
 ");
-$stmt_daily->execute([':start_date' => $start_date, ':end_date' => $end_date]);
+$stmt_daily->execute([':start_ts' => $start_ts, ':end_ts' => $end_ts]);
 $daily_breakdown = $stmt_daily->fetchAll();
 
 $page_title = "Sales Analytics Report";

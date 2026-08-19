@@ -10,7 +10,7 @@ require_once __DIR__ . '/sms.php';
 
 /**
  * Centralized Phone Number Normalizer for Pakistani & International Standards
- * Examples: 03138388108 -> +923138388108, 00923138388108 -> +923138388108
+ * Examples: 03000000000 -> +923000000000, 00923000000000 -> +923000000000
  */
 function normalize_phone_number($phone) {
     // Strip whitespace, dashes, and non-numeric characters except +
@@ -110,34 +110,55 @@ function save_gateway_settings($settings) {
 /**
  * Real Backend WhatsApp API Health Check
  */
-function test_whatsapp_api_connection() {
+function test_whatsapp_api_connection($use_cache = false) {
+    if ($use_cache && isset($_SESSION['dw_wa_health_cache']) && isset($_SESSION['dw_wa_health_time'])) {
+        if (time() - $_SESSION['dw_wa_health_time'] < 60) {
+            return $_SESSION['dw_wa_health_cache'];
+        }
+    }
+
     $settings = get_gateway_settings();
     $token = $settings['whatsapp_access_token'] ?? '';
     $phone_id = $settings['whatsapp_phone_number_id'] ?? '';
     $version = $settings['whatsapp_graph_version'] ?? 'v20.0';
 
     if (empty($settings['whatsapp_enabled']) || $settings['whatsapp_enabled'] === '0') {
-        return [
+        $res = [
             'success' => false,
             'status' => 'OFFLINE',
             'error' => 'WhatsApp channel is disabled in System Settings.'
         ];
+        if ($use_cache) {
+            $_SESSION['dw_wa_health_cache'] = $res;
+            $_SESSION['dw_wa_health_time'] = time();
+        }
+        return $res;
     }
 
     if (empty($phone_id)) {
-        return [
+        $res = [
             'success' => false,
             'status' => 'FAILED',
             'error' => 'WhatsApp Phone Number ID is missing.'
         ];
+        if ($use_cache) {
+            $_SESSION['dw_wa_health_cache'] = $res;
+            $_SESSION['dw_wa_health_time'] = time();
+        }
+        return $res;
     }
 
     if (empty($token)) {
-        return [
+        $res = [
             'success' => false,
             'status' => 'FAILED',
             'error' => 'API Access Token is missing.'
         ];
+        if ($use_cache) {
+            $_SESSION['dw_wa_health_cache'] = $res;
+            $_SESSION['dw_wa_health_time'] = time();
+        }
+        return $res;
     }
 
     // Query Phone Number Node on Meta Graph API
@@ -158,11 +179,16 @@ function test_whatsapp_api_connection() {
 
     if ($result_raw !== false && (str_contains($status_line, '200') || str_contains($status_line, '201'))) {
         $data = json_decode($result_raw, true);
-        return [
+        $res = [
             'success' => true,
             'status' => 'CONNECTED',
             'details' => $data
         ];
+        if ($use_cache) {
+            $_SESSION['dw_wa_health_cache'] = $res;
+            $_SESSION['dw_wa_health_time'] = time();
+        }
+        return $res;
     }
 
     $err_desc = 'Network / Internet Connection Unavailable';
@@ -175,65 +201,100 @@ function test_whatsapp_api_connection() {
         }
     }
 
-    return [
+    $res = [
         'success' => false,
         'status' => 'FAILED',
         'error' => $err_desc
     ];
+    if ($use_cache) {
+        $_SESSION['dw_wa_health_cache'] = $res;
+        $_SESSION['dw_wa_health_time'] = time();
+    }
+    return $res;
 }
 
 /**
  * Real Backend SMS Gateway Socket / REST Health Check
  */
-function test_sms_gateway_connection() {
+function test_sms_gateway_connection($use_cache = false) {
+    if ($use_cache && isset($_SESSION['dw_sms_health_cache']) && isset($_SESSION['dw_sms_health_time'])) {
+        if (time() - $_SESSION['dw_sms_health_time'] < 60) {
+            return $_SESSION['dw_sms_health_cache'];
+        }
+    }
+
     $settings = get_gateway_settings();
     $api_url = $settings['sms_api_url'] ?? '';
 
     if (empty($settings['sms_enabled']) || $settings['sms_enabled'] === '0') {
-        return [
+        $res = [
             'success' => false,
             'status' => 'OFFLINE',
             'reason' => 'SMS channel is disabled in System Settings.'
         ];
+        if ($use_cache) {
+            $_SESSION['dw_sms_health_cache'] = $res;
+            $_SESSION['dw_sms_health_time'] = time();
+        }
+        return $res;
     }
 
     if (empty($api_url)) {
-        return [
+        $res = [
             'success' => false,
             'status' => 'OFFLINE',
             'reason' => 'SMS Gateway REST API URL is missing.'
         ];
+        if ($use_cache) {
+            $_SESSION['dw_sms_health_cache'] = $res;
+            $_SESSION['dw_sms_health_time'] = time();
+        }
+        return $res;
     }
 
     $parsed = parse_url($api_url);
     $host = $parsed['host'] ?? '127.0.0.1';
     $port = $parsed['port'] ?? 8080;
 
-    // Check TCP Socket Connection (Port Open Test)
-    $fp = @fsockopen($host, $port, $errno, $errstr, 2);
+    // Check TCP Socket Connection (Port Open Test - 0.5s Timeout for non-blocking page renders)
+    $fp = @fsockopen($host, $port, $errno, $errstr, 0.5);
     if (!$fp) {
         // Fallback to simulated GSM cellular mode if local dev server without gateway app
         if ($settings['sms_provider'] === 'simulated_cellular') {
-            return [
+            $res = [
                 'success' => true,
                 'status' => 'ONLINE',
                 'reason' => 'Local GSM SIM Cellular Simulation Active'
             ];
+            if ($use_cache) {
+                $_SESSION['dw_sms_health_cache'] = $res;
+                $_SESSION['dw_sms_health_time'] = time();
+            }
+            return $res;
         }
-        return [
+        $res = [
             'success' => false,
             'status' => 'OFFLINE',
             'reason' => "Connection refused: Port {$port} on {$host} is unreachable ({$errstr})."
         ];
+        if ($use_cache) {
+            $_SESSION['dw_sms_health_cache'] = $res;
+            $_SESSION['dw_sms_health_time'] = time();
+        }
+        return $res;
     }
 
     fclose($fp);
-
-    return [
+    $res = [
         'success' => true,
         'status' => 'ONLINE',
-        'reason' => "Gateway REST API reachable at {$host}:{$port}. GSM Modem Ready."
+        'reason' => 'Local SMS Gateway Socket Operational'
     ];
+    if ($use_cache) {
+        $_SESSION['dw_sms_health_cache'] = $res;
+        $_SESSION['dw_sms_health_time'] = time();
+    }
+    return $res;
 }
 
 /**

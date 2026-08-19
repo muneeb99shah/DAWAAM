@@ -16,17 +16,40 @@ $pdo = get_db_connection();
 // Role Determination
 $is_super_admin = has_role('super_admin');
 
-// Fetch Operational KPI Metrics from MySQL
-$stat_products = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
-$stat_sales_count = $pdo->query("SELECT COUNT(*) FROM sales")->fetchColumn();
-$stat_sales_today = $pdo->query("SELECT COALESCE(SUM(total_price), 0) FROM sales WHERE DATE(sold_at) = CURRENT_DATE()")->fetchColumn();
-$stat_sales_today_count = $pdo->query("SELECT COUNT(*) FROM sales WHERE DATE(sold_at) = CURRENT_DATE()")->fetchColumn();
-$stat_low_stock = $pdo->query("SELECT COUNT(*) FROM products WHERE stock_qty <= low_stock_threshold")->fetchColumn();
-$stat_alerts_pending = $pdo->query("SELECT COUNT(*) FROM alerts WHERE is_sent = 0")->fetchColumn();
-$stat_unsynced = $pdo->query("SELECT COUNT(*) FROM sync_log WHERE synced = 0")->fetchColumn();
-$stat_conflicts = $pdo->query("SELECT COUNT(*) FROM sync_conflicts WHERE status = 'unresolved'")->fetchColumn();
-$stat_messages = $pdo->query("SELECT COUNT(*) FROM contact_messages")->fetchColumn();
-$stat_asset_val = $pdo->query("SELECT COALESCE(SUM(price * stock_qty), 0) FROM products")->fetchColumn();
+// Consolidated KPI Metrics Queries for High Performance
+$prod_stats = $pdo->query("
+    SELECT 
+        COUNT(*) AS total_products,
+        COALESCE(SUM(CASE WHEN stock_qty <= low_stock_threshold THEN 1 ELSE 0 END), 0) AS low_stock_count,
+        COALESCE(SUM(price * stock_qty), 0) AS asset_valuation
+    FROM products
+")->fetch();
+$stat_products = $prod_stats['total_products'];
+$stat_low_stock = $prod_stats['low_stock_count'];
+$stat_asset_val = $prod_stats['asset_valuation'];
+
+$sales_stats = $pdo->query("
+    SELECT 
+        COUNT(*) AS total_sales,
+        COALESCE(SUM(CASE WHEN sold_at >= CURRENT_DATE() THEN total_price ELSE 0 END), 0) AS rev_today,
+        COALESCE(SUM(CASE WHEN sold_at >= CURRENT_DATE() THEN 1 ELSE 0 END), 0) AS count_today
+    FROM sales
+")->fetch();
+$stat_sales_count = $sales_stats['total_sales'];
+$stat_sales_today = $sales_stats['rev_today'];
+$stat_sales_today_count = $sales_stats['count_today'];
+
+$sys_stats = $pdo->query("
+    SELECT 
+        (SELECT COUNT(*) FROM alerts WHERE is_sent = 0) AS alerts_pending,
+        (SELECT COUNT(*) FROM sync_log WHERE synced = 0) AS unsynced_log,
+        (SELECT COUNT(*) FROM sync_conflicts WHERE status = 'unresolved') AS unresolved_conflicts,
+        (SELECT COUNT(*) FROM contact_messages) AS messages_count
+")->fetch();
+$stat_alerts_pending = $sys_stats['alerts_pending'];
+$stat_unsynced = $sys_stats['unsynced_log'];
+$stat_conflicts = $sys_stats['unresolved_conflicts'];
+$stat_messages = $sys_stats['messages_count'];
 
 $page_title = "Operations Dashboard";
 require_once __DIR__ . '/../includes/header.php';

@@ -20,8 +20,8 @@ $category_filter = (int)($_GET['category'] ?? 0);
 // Fetch Categories for dropdown filter
 $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC")->fetchAll();
 
-// Fetch Auto-Suggest Suggestions List
-$suggest_raw = $pdo->query("SELECT name FROM products UNION SELECT sku FROM products")->fetchAll(PDO::FETCH_COLUMN);
+// Fetch Auto-Suggest Suggestions List (Limited to top 50 entries for high DOM rendering performance)
+$suggest_raw = $pdo->query("(SELECT name FROM products ORDER BY name ASC LIMIT 30) UNION (SELECT sku FROM products WHERE sku IS NOT NULL ORDER BY sku ASC LIMIT 20)")->fetchAll(PDO::FETCH_COLUMN);
 
 // Build Query with PDO prepared statements
 $where_clauses = [];

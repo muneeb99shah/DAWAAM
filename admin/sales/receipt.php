@@ -194,7 +194,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
                     <?php if ($sale['discount_amount'] > 0): ?>
                         <div class="d-flex justify-content-between mb-1 small text-danger">
-                            <span>Discount (<?php echo sanitize($sale['discount_val']); ?><?php echo $sale['discount_type'] === 'percentage' ? '%' : ' PKR'; ?>):</span>
+                            <span>Discount (<?php echo sanitize($sale['discount_val']); ?><?php echo in_array($sale['discount_type'], ['percent', 'percentage'], true) ? '%' : ' PKR'; ?>):</span>
                             <strong class="font-monospace">- PKR <?php echo number_format($sale['discount_amount'], 2); ?></strong>
                         </div>
                     <?php endif; ?>
