@@ -10,19 +10,21 @@ $brand_target = $user ? (BASE_URL . '/admin/index.php') : (BASE_URL . '/index.ph
 ?>
 <nav class="navbar navbar-expand-xl navbar-dark dw-navbar sticky-top">
     <div class="container-fluid px-3 px-xl-4">
-        <!-- Brand Logo & Badge -->
-        <a class="navbar-brand dw-navbar-brand d-flex align-items-center me-2 me-xl-3" href="<?php echo $brand_target; ?>">
-            <i class="bi bi-shield-check text-emerald me-2 fs-3" style="color: #10b981;"></i>
-            <span class="fw-bold tracking-tight"><?php echo APP_NAME; ?></span>
-            <span class="dw-brand-badge ms-2 d-none d-sm-inline-block">Local Continuity</span>
-        </a>
+        <!-- Brand Logo & Left Hamburger Area -->
+        <div class="d-flex align-items-center me-auto me-md-0">
+            <?php if ($user): ?>
+                <!-- Left Mobile Hamburger Navigation Button (44px Touch Target) -->
+                <button id="dw-mobile-hamburger-btn" class="btn btn-link text-white text-decoration-none border-0 p-0 me-2 d-inline-flex align-items-center justify-content-center d-md-none" type="button" aria-label="Toggle Operational Navigation Menu" style="width: 44px; height: 44px;">
+                    <i class="bi bi-list fs-2" id="dw-hamburger-icon" style="color: #10b981;"></i>
+                </button>
+            <?php endif; ?>
 
-        <?php if ($user): ?>
-            <!-- Mobile Navigation Offcanvas Button -->
-            <button class="btn btn-outline-light border-0 p-1 me-2 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#dwMobileNav" aria-controls="dwMobileNav" aria-label="Open Operational Menu">
-                <i class="bi bi-list fs-2" style="color: #10b981;"></i>
-            </button>
-        <?php endif; ?>
+            <a class="navbar-brand dw-navbar-brand d-flex align-items-center me-2 me-xl-3" href="<?php echo $brand_target; ?>">
+                <i class="bi bi-shield-check text-emerald me-2 fs-3" style="color: #10b981;"></i>
+                <span class="fw-bold tracking-tight"><?php echo APP_NAME; ?></span>
+                <span class="dw-brand-badge ms-2 d-none d-sm-inline-block">Local Continuity</span>
+            </a>
+        </div>
 
         <!-- Mobile/Tablet Toggle Button -->
         <button class="navbar-toggler border-0 shadow-none p-2" type="button" data-bs-toggle="collapse" data-bs-target="#dwNavbar" aria-controls="dwNavbar" aria-expanded="false" aria-label="Toggle navigation">

@@ -135,4 +135,80 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
+
+    // Enterprise Left Mobile Navigation Drawer Controller
+    const mobileHamburgerBtn = document.getElementById('dw-mobile-hamburger-btn');
+    const bottomNavMenuBtn = document.getElementById('dw-bottom-nav-menu-btn');
+    const mobileDrawer = document.getElementById('dwMobileNavDrawer');
+    const mobileBackdrop = document.getElementById('dwMobileNavBackdrop');
+    const mobileCloseBtn = document.getElementById('dw-mobile-drawer-close-btn');
+    const hamburgerIcon = document.getElementById('dw-hamburger-icon');
+
+    function openMobileDrawer() {
+        if (!mobileDrawer) return;
+        mobileDrawer.classList.add('open');
+        if (mobileBackdrop) mobileBackdrop.classList.add('open');
+        document.body.classList.add('dw-drawer-open');
+        if (hamburgerIcon) {
+            hamburgerIcon.className = 'bi bi-x-lg fs-3 text-warning';
+        }
+    }
+
+    function closeMobileDrawer() {
+        if (!mobileDrawer) return;
+        mobileDrawer.classList.remove('open');
+        if (mobileBackdrop) mobileBackdrop.classList.remove('open');
+        document.body.classList.remove('dw-drawer-open');
+        if (hamburgerIcon) {
+            hamburgerIcon.className = 'bi bi-list fs-2 text-emerald';
+            hamburgerIcon.style.color = '#10b981';
+        }
+    }
+
+    function toggleMobileDrawer() {
+        if (mobileDrawer && mobileDrawer.classList.contains('open')) {
+            closeMobileDrawer();
+        } else {
+            openMobileDrawer();
+        }
+    }
+
+    if (mobileHamburgerBtn) {
+        mobileHamburgerBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            toggleMobileDrawer();
+        });
+    }
+
+    if (bottomNavMenuBtn) {
+        bottomNavMenuBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            toggleMobileDrawer();
+        });
+    }
+
+    if (mobileBackdrop) {
+        mobileBackdrop.addEventListener('click', closeMobileDrawer);
+    }
+
+    if (mobileCloseBtn) {
+        mobileCloseBtn.addEventListener('click', closeMobileDrawer);
+    }
+
+    // ESC Key listener to close drawer
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && mobileDrawer && mobileDrawer.classList.contains('open')) {
+            closeMobileDrawer();
+        }
+    });
+
+    // Close drawer when clicking any link inside
+    if (mobileDrawer) {
+        const navLinks = mobileDrawer.querySelectorAll('a.list-group-item');
+        navLinks.forEach(function (link) {
+            link.addEventListener('click', function () {
+                closeMobileDrawer();
+            });
+        });
+    }
 });
