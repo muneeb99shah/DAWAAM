@@ -117,9 +117,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Mobile Navigation Search Filter Handler
+    // Mobile Navigation Search Filter & Auto-Dismiss Link Handlers
     const mobileSearchInput = document.getElementById('dw-mobile-search-input');
     const mobileNavList = document.getElementById('dwMobileNavList');
+    const mobileOffcanvasEl = document.getElementById('dwMobileNav');
 
     if (mobileSearchInput && mobileNavList) {
         mobileSearchInput.addEventListener('input', function () {
@@ -131,6 +132,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     item.style.display = 'flex';
                 } else {
                     item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    if (mobileOffcanvasEl) {
+        const links = mobileOffcanvasEl.querySelectorAll('a');
+        links.forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
+                    const inst = bootstrap.Offcanvas.getInstance(mobileOffcanvasEl);
+                    if (inst) {
+                        inst.hide();
+                    }
                 }
             });
         });

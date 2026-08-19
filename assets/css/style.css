@@ -1199,44 +1199,108 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 
 /* ==========================================================================
-   DAWAAM - Complete Multi-Device Responsive System (320px - 1920px)
+   DAWAAM - Multi-Device Responsive System (320px - 1920px)
    ========================================================================== */
 
-/* Mobile Bottom Navigation Bar */
+/* Left Side Mobile Offcanvas Drawer */
+.dw-mobile-offcanvas.offcanvas-start {
+    width: 280px !important;
+    max-width: 82vw !important;
+    border-right: 1px solid var(--dw-slate-border);
+    box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15);
+}
+
+.dw-mobile-offcanvas .offcanvas-header {
+    background-color: var(--dw-slate-dark) !important;
+    border-bottom: 3px solid var(--dw-emerald-primary) !important;
+}
+
+.dw-mobile-offcanvas .offcanvas-body {
+    padding: 1rem 0.75rem !important;
+}
+
+.dw-mobile-offcanvas .list-group-item {
+    min-height: 46px;
+    border-radius: var(--dw-radius-md) !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--dw-text-main);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dw-mobile-offcanvas .list-group-item:hover,
+.dw-mobile-offcanvas .list-group-item:focus {
+    background-color: var(--dw-slate-light);
+    color: var(--dw-emerald-hover);
+}
+
+.dw-mobile-offcanvas .list-group-item.active {
+    background-color: var(--dw-emerald-light) !important;
+    color: var(--dw-emerald-hover) !important;
+    font-weight: 600 !important;
+    border-left: 4px solid var(--dw-emerald-primary) !important;
+}
+
+/* Touch-Friendly Hamburger Button */
+.dw-mobile-hamburger-btn {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--dw-radius-sm);
+    transition: background-color 0.15s ease;
+}
+
+.dw-mobile-hamburger-btn:hover,
+.dw-mobile-hamburger-btn:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Fixed Bottom Mobile Navigation Bar */
 .dw-mobile-bottom-bar {
-    border-top: 1px solid var(--dw-slate-border);
-    box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.1);
+    background: #ffffff !important;
+    border-top: 1px solid var(--dw-slate-border) !important;
+    box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.1) !important;
+    height: 60px !important;
+    padding: 4px 8px !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 1030 !important;
 }
 
 .dw-mobile-bottom-bar a,
 .dw-mobile-bottom-bar button {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     color: var(--dw-slate-muted);
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    padding: 2px 0;
     transition: color 0.15s ease;
 }
 
-.dw-mobile-bottom-bar a.active {
+.dw-mobile-bottom-bar a.active,
+.dw-mobile-bottom-bar button.active {
     color: var(--dw-emerald-primary) !important;
-}
-
-/* Offcanvas Drawer Touch Specs */
-.dw-mobile-offcanvas {
-    max-width: 320px;
-    width: 85vw;
-}
-
-.dw-mobile-offcanvas .list-group-item {
-    min-height: 48px;
-    transition: background-color 0.15s ease;
-}
-
-.dw-mobile-offcanvas .list-group-item:active {
-    background-color: var(--dw-emerald-light);
+    font-weight: 700 !important;
 }
 
 /* Viewport Breakpoint Adjustments */
 
-/* 1. Large Desktops & 1080p Monitors (>= 1366px & 1920px) */
+/* 1. Large Desktops (>= 1366px & 1920px) */
 @media (min-width: 1366px) {
     .container-fluid {
         padding-left: 2rem !important;
@@ -1244,7 +1308,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     }
 }
 
-/* 2. Tablet Landscape & Small Laptops (768px <= width < 1024px) */
+/* 2. Tablets (768px <= width < 1024px) */
 @media (min-width: 768px) and (max-width: 1023.98px) {
     .dw-sidebar.dw-sidebar-collapsed {
         width: 60px !important;
@@ -1259,15 +1323,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     }
 }
 
-/* 3. Mobile Viewports (< 768px) */
+/* 3. Mobile Screens (< 768px) */
 @media (max-width: 767.98px) {
     body {
-        padding-bottom: 64px !important;
+        padding-bottom: 72px !important;
         overflow-x: hidden !important;
     }
 
     .dw-navbar {
-        padding: 0.5rem 0.85rem !important;
+        padding: 0.5rem 0.75rem !important;
     }
 
     .dw-navbar-brand {
@@ -1275,11 +1339,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     }
 
     .dw-user-btn {
-        max-width: 140px !important;
+        max-width: 130px !important;
     }
 
     .dw-user-name-text {
-        max-width: 80px !important;
+        max-width: 75px !important;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -1302,13 +1366,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
         font-size: 1.25rem !important;
     }
 
-    /* Modal adjustments on mobile */
     .modal-dialog {
         margin: 0.5rem !important;
         max-width: calc(100% - 1rem) !important;
     }
 
-    /* Prevent overflow in form rows */
     .row {
         margin-left: -0.5rem;
         margin-right: -0.5rem;
@@ -1320,8 +1382,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     }
 }
 
-/* 4. Ultra-Compact Mobile Screens (320px - 425px) */
-@media (max-width: 425px) {
+/* 4. Ultra-Compact Mobile Screens (320px - 430px) */
+@media (max-width: 430px) {
     .container-fluid {
         padding-left: 0.4rem !important;
         padding-right: 0.4rem !important;
