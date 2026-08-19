@@ -116,4 +116,23 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
+
+    // Mobile Navigation Search Filter Handler
+    const mobileSearchInput = document.getElementById('dw-mobile-search-input');
+    const mobileNavList = document.getElementById('dwMobileNavList');
+
+    if (mobileSearchInput && mobileNavList) {
+        mobileSearchInput.addEventListener('input', function () {
+            const query = this.value.trim().toLowerCase();
+            const items = mobileNavList.querySelectorAll('.list-group-item');
+            items.forEach(function (item) {
+                const title = (item.getAttribute('data-mobile-title') || '').toLowerCase();
+                if (!query || title.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
 });

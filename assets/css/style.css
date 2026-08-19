@@ -1197,3 +1197,155 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     max-width: 210mm;
     margin: 0 auto;
 }
+
+/* ==========================================================================
+   DAWAAM - Complete Multi-Device Responsive System (320px - 1920px)
+   ========================================================================== */
+
+/* Mobile Bottom Navigation Bar */
+.dw-mobile-bottom-bar {
+    border-top: 1px solid var(--dw-slate-border);
+    box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.1);
+}
+
+.dw-mobile-bottom-bar a,
+.dw-mobile-bottom-bar button {
+    flex: 1;
+    color: var(--dw-slate-muted);
+    transition: color 0.15s ease;
+}
+
+.dw-mobile-bottom-bar a.active {
+    color: var(--dw-emerald-primary) !important;
+}
+
+/* Offcanvas Drawer Touch Specs */
+.dw-mobile-offcanvas {
+    max-width: 320px;
+    width: 85vw;
+}
+
+.dw-mobile-offcanvas .list-group-item {
+    min-height: 48px;
+    transition: background-color 0.15s ease;
+}
+
+.dw-mobile-offcanvas .list-group-item:active {
+    background-color: var(--dw-emerald-light);
+}
+
+/* Viewport Breakpoint Adjustments */
+
+/* 1. Large Desktops & 1080p Monitors (>= 1366px & 1920px) */
+@media (min-width: 1366px) {
+    .container-fluid {
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+    }
+}
+
+/* 2. Tablet Landscape & Small Laptops (768px <= width < 1024px) */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+    .dw-sidebar.dw-sidebar-collapsed {
+        width: 60px !important;
+    }
+    
+    .dw-hero-banner {
+        padding: 1.25rem 1.5rem !important;
+    }
+
+    .dw-hero-banner h2, .dw-hero-banner .display-6 {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* 3. Mobile Viewports (< 768px) */
+@media (max-width: 767.98px) {
+    body {
+        padding-bottom: 64px !important;
+        overflow-x: hidden !important;
+    }
+
+    .dw-navbar {
+        padding: 0.5rem 0.85rem !important;
+    }
+
+    .dw-navbar-brand {
+        font-size: 1.05rem !important;
+    }
+
+    .dw-user-btn {
+        max-width: 140px !important;
+    }
+
+    .dw-user-name-text {
+        max-width: 80px !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dw-hero-banner {
+        padding: 1.25rem 1rem !important;
+        text-align: left;
+    }
+
+    .dw-hero-banner h2, .dw-hero-banner .display-6 {
+        font-size: 1.35rem !important;
+    }
+
+    .dw-stat-card {
+        padding: 0.85rem !important;
+    }
+
+    .dw-stat-value {
+        font-size: 1.25rem !important;
+    }
+
+    /* Modal adjustments on mobile */
+    .modal-dialog {
+        margin: 0.5rem !important;
+        max-width: calc(100% - 1rem) !important;
+    }
+
+    /* Prevent overflow in form rows */
+    .row {
+        margin-left: -0.5rem;
+        margin-right: -0.5rem;
+    }
+
+    .row > [class*="col-"] {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+
+/* 4. Ultra-Compact Mobile Screens (320px - 425px) */
+@media (max-width: 425px) {
+    .container-fluid {
+        padding-left: 0.4rem !important;
+        padding-right: 0.4rem !important;
+    }
+
+    .dw-card {
+        padding: 0.85rem !important;
+        border-radius: var(--dw-radius-md);
+    }
+
+    .dw-brand-badge {
+        display: none !important;
+    }
+
+    .btn {
+        font-size: 0.78rem !important;
+    }
+
+    .btn-sm {
+        font-size: 0.72rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+
+    .table {
+        font-size: 0.75rem !important;
+    }
+}

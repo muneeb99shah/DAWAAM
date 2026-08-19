@@ -17,6 +17,13 @@ $brand_target = $user ? (BASE_URL . '/admin/index.php') : (BASE_URL . '/index.ph
             <span class="dw-brand-badge ms-2 d-none d-sm-inline-block">Local Continuity</span>
         </a>
 
+        <?php if ($user): ?>
+            <!-- Mobile Navigation Offcanvas Button -->
+            <button class="btn btn-outline-light border-0 p-1 me-2 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#dwMobileNav" aria-controls="dwMobileNav" aria-label="Open Operational Menu">
+                <i class="bi bi-list fs-2" style="color: #10b981;"></i>
+            </button>
+        <?php endif; ?>
+
         <!-- Mobile/Tablet Toggle Button -->
         <button class="navbar-toggler border-0 shadow-none p-2" type="button" data-bs-toggle="collapse" data-bs-target="#dwNavbar" aria-controls="dwNavbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

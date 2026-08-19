@@ -34,7 +34,7 @@ $show_operational_layout = is_logged_in() && $is_admin_route;
 
         <?php if ($show_operational_layout): ?>
             <div class="d-flex gap-3 align-items-start">
-                <div class="flex-shrink-0">
+                <div class="flex-shrink-0 d-none d-md-block">
                     <?php echo render_quick_access_sidebar(); ?>
                 </div>
                 <div class="flex-grow-1 min-w-0">
