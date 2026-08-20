@@ -1228,16 +1228,15 @@ body.dw-drawer-open {
     position: fixed;
     top: 56px;
     left: -320px;
-    width: 290px;
-    max-width: 84vw;
+    width: 280px;
+    max-width: 82vw;
     height: calc(100vh - 56px - 56px);
     background: #ffffff;
     border-right: 1px solid var(--dw-slate-border);
-    box-shadow: 6px 0 25px rgba(15, 23, 42, 0.18);
+    box-shadow: 6px 0 25px rgba(15, 23, 42, 0.15);
     z-index: 1045;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
 }
@@ -1253,12 +1252,12 @@ body.dw-drawer-open {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 23, 42, 0.4);
+    background: rgba(15, 23, 42, 0.35);
     backdrop-filter: blur(2px);
     z-index: 1040;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .dw-mobile-drawer-backdrop.open {
@@ -1266,22 +1265,22 @@ body.dw-drawer-open {
     visibility: visible;
 }
 
-.dw-mobile-drawer-section-title {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: #64748b;
-    text-transform: uppercase;
-    padding: 0.75rem 0.5rem 0.25rem 0.5rem;
+/* Accordion Group Header Styling */
+.dw-mobile-group-header {
+    transition: background-color 0.15s ease;
+}
+
+.dw-mobile-group-header:hover {
+    background-color: #f1f5f9 !important;
 }
 
 .dw-mobile-drawer .list-group-item {
-    min-height: 46px;
-    padding: 0.65rem 0.85rem;
+    min-height: 38px;
+    padding: 0.35rem 0.6rem;
     border: none;
     border-radius: 6px;
     margin-bottom: 2px;
-    font-size: 0.875rem;
+    font-size: 0.835rem;
     color: var(--dw-text-main);
     display: flex;
     align-items: center;
@@ -1298,9 +1297,9 @@ body.dw-drawer-open {
 
 .dw-mobile-drawer .list-group-item.active {
     background-color: #ecfdf5 !important;
-    color: var(--dw-emerald-hover) !important;
+    color: #047857 !important;
     font-weight: 600 !important;
-    border-left: 4px solid var(--dw-emerald-primary) !important;
+    border-left: 3.5px solid #059669 !important;
 }
 
 /* Viewport Breakpoint Adjustments */

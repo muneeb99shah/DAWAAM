@@ -211,4 +211,38 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
+
+    // Expandable Accordion Group Toggles
+    const groupHeaders = document.querySelectorAll('.dw-mobile-group-header');
+    groupHeaders.forEach(function (header) {
+        header.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetSelector = this.getAttribute('data-group-target');
+            if (!targetSelector) return;
+            const targetBody = document.querySelector(targetSelector);
+            const chevron = this.querySelector('.dw-group-chevron');
+
+            if (targetBody) {
+                const isCurrentlyOpen = !targetBody.classList.contains('d-none');
+
+                // Collapse all groups first for clean compact accordion
+                document.querySelectorAll('.dw-group-body').forEach(function (body) {
+                    body.classList.add('d-none');
+                    body.classList.remove('show');
+                });
+                document.querySelectorAll('.dw-group-chevron').forEach(function (ch) {
+                    ch.className = 'bi bi-chevron-right dw-group-chevron text-muted';
+                });
+
+                // Toggle selected group
+                if (!isCurrentlyOpen) {
+                    targetBody.classList.remove('d-none');
+                    targetBody.classList.add('show');
+                    if (chevron) {
+                        chevron.className = 'bi bi-chevron-down dw-group-chevron text-success';
+                    }
+                }
+            }
+        });
+    });
 });
