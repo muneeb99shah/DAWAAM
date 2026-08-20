@@ -184,7 +184,7 @@ function render_quick_access_sidebar() {
 }
 
 /**
- * Render Enterprise Mobile Navigation Left Drawer & Bottom Bar
+ * Render Mobile Navigation Left Drawer & Bottom Bar (Matching Reference Screenshot)
  *
  * @return string HTML
  */
@@ -201,138 +201,38 @@ function render_mobile_navigation_drawer() {
     $current_script = $_SERVER['SCRIPT_NAME'] ?? '';
     $user = current_user();
 
-    // Group items into 5 logical enterprise ERP categories
-    $groups = [
-        [
-            'id' => 'main',
-            'name' => 'MAIN',
-            'icon' => 'bi-grid-1x2',
-            'items' => []
-        ],
-        [
-            'id' => 'ops',
-            'name' => 'OPERATIONS',
-            'icon' => 'bi-cart-check',
-            'items' => []
-        ],
-        [
-            'id' => 'inv',
-            'name' => 'INVENTORY & CATALOG',
-            'icon' => 'bi-box-seam',
-            'items' => []
-        ],
-        [
-            'id' => 'analytics',
-            'name' => 'ANALYTICS & SMS',
-            'icon' => 'bi-graph-up',
-            'items' => []
-        ],
-        [
-            'id' => 'admin',
-            'name' => 'SYSTEM ADMINISTRATION',
-            'icon' => 'bi-gear',
-            'items' => []
-        ]
-    ];
-
-    foreach ($authorized_links as $link) {
-        $match = $link['script_match'];
-        if ($match === '/admin/index.php') {
-            $groups[0]['items'][] = $link;
-        } elseif (in_array($match, ['/admin/sales/create.php', '/admin/sales/index.php'])) {
-            $groups[1]['items'][] = $link;
-        } elseif (in_array($match, ['/admin/products/', '/admin/inventory/', '/admin/alerts/'])) {
-            $groups[2]['items'][] = $link;
-        } elseif (in_array($match, ['/admin/reports/', '/admin/messages/', '/admin/sms/'])) {
-            $groups[3]['items'][] = $link;
-        } else {
-            $groups[4]['items'][] = $link;
-        }
-    }
-
-    // Left Drawer Navigation Container
+    // Left Drawer Navigation Container (Clean White Surface)
     $html = '<aside id="dwMobileNavDrawer" class="dw-mobile-drawer d-md-none" aria-label="Mobile Navigation Drawer">';
     
-    // Drawer Header
-    $html .= '<div class="px-3 py-3 border-bottom bg-dark text-white d-flex align-items-center justify-content-between">';
-    $html .= '<div class="d-flex align-items-center gap-2.5">';
-    $html .= '<i class="bi bi-shield-check text-emerald" style="color: #10b981; font-size: 1.35rem;"></i>';
-    $html .= '<div>';
-    $html .= '<h6 class="fw-bold mb-0 text-white" style="font-size: 0.925rem; letter-spacing: -0.01em;">' . APP_NAME . ' Navigation</h6>';
-    $html .= '<span class="small text-white-50" style="font-size: 0.72rem;">User Code: ' . sanitize($user['user_code']) . '</span>';
-    $html .= '</div>';
-    $html .= '</div>';
-    $html .= '<button type="button" id="dw-mobile-drawer-close-btn" class="btn-close btn-close-white p-1" aria-label="Close Navigation" style="font-size: 0.8rem;"></button>';
-    $html .= '</div>';
-
-    // Drawer Body
-    $html .= '<div class="p-3 bg-white" id="dwMobileDrawerBody" style="overflow-y: auto; -webkit-overflow-scrolling: touch;">';
+    $html .= '<div class="p-3 bg-white d-flex flex-column h-100">';
     
-    // Search Box
-    $html .= '<div class="mb-3">';
-    $html .= '<div class="input-group input-group-sm">';
-    $html .= '<span class="input-group-text bg-light border-end-0 py-1.5"><i class="bi bi-search text-muted" style="font-size: 0.85rem;"></i></span>';
-    $html .= '<input type="text" id="dw-mobile-search-input" class="form-control form-control-sm border-start-0 py-1.5" placeholder="Search modules..." autocomplete="off" style="font-size: 0.85rem;">';
-    $html .= '</div>';
+    // Top Search Input Box (Matching Reference Image)
+    $html .= '<div class="mb-3 px-1">';
+    $html .= '<input type="text" id="dw-mobile-search-input" class="form-control dw-mobile-search-input" placeholder="Search Menu..." autocomplete="off">';
     $html .= '</div>';
 
-    // Expandable Group Accordion Stack
-    $html .= '<div id="dwMobileNavList">';
-    foreach ($groups as $group) {
-        if (empty($group['items'])) continue;
+    // Navigation Links List (Clean Flat Stack with Icons, Titles & Chevron Arrows)
+    $html .= '<div class="list-group list-group-flush border-0 flex-grow-1 px-1" id="dwMobileNavList" style="overflow-y: auto; -webkit-overflow-scrolling: touch;">';
+    foreach ($authorized_links as $link) {
+        $is_active = (strpos($current_script, $link['script_match']) !== false);
+        $active_class = $is_active ? ' active' : '';
 
-        // Check if group contains the active script
-        $group_has_active = false;
-        foreach ($group['items'] as $item) {
-            if (strpos($current_script, $item['script_match']) !== false) {
-                $group_has_active = true;
-                break;
-            }
-        }
-
-        // Main & Active groups start expanded
-        $is_open = $group_has_active || ($group['id'] === 'main') || ($group['id'] === 'ops' && !has_active_in_any($groups, $current_script));
-        $body_class = $is_open ? 'dw-group-body show' : 'dw-group-body collapsed d-none';
-        $chevron_class = $is_open ? 'bi bi-chevron-down dw-group-chevron text-success' : 'bi bi-chevron-right dw-group-chevron text-muted';
-
-        $html .= '<div class="dw-mobile-group-wrap mb-2">';
-        $html .= '<button type="button" class="dw-mobile-group-header btn btn-light btn-sm w-100 d-flex align-items-center justify-content-between text-start py-2 px-3 border-0 rounded-2" data-group-target="#dw-group-' . $group['id'] . '" style="background: #f8fafc;">';
-        $html .= '<span class="d-inline-flex align-items-center gap-2.5 fw-bold text-uppercase" style="font-size: 0.725rem; color: #475569; letter-spacing: 0.05em;">';
-        $html .= '<i class="bi ' . $group['icon'] . ' text-muted" style="font-size: 0.925rem;"></i>';
-        $html .= '<span>' . htmlspecialchars($group['name']) . '</span>';
-        $html .= '</span>';
-        $html .= '<i class="' . $chevron_class . '" style="font-size: 0.75rem;"></i>';
-        $html .= '</button>';
-
-        $html .= '<div id="dw-group-' . $group['id'] . '" class="' . $body_class . ' ps-1 pe-1 pt-1.5">';
-        $html .= '<div class="list-group list-group-flush border-0">';
-
-        foreach ($group['items'] as $link) {
-            $is_active = (strpos($current_script, $link['script_match']) !== false);
-            $active_class = $is_active ? ' active' : '';
-
-            $html .= '<a href="' . htmlspecialchars($link['url']) . '" class="list-group-item list-group-item-action py-2.5 px-3 mb-1 border-0 rounded-2' . $active_class . '" data-mobile-title="' . htmlspecialchars($link['title']) . '" style="min-height: 44px; display: flex; align-items: center; justify-content: space-between;">';
-            $html .= '<div class="d-flex align-items-center me-2" style="min-width: 0;">';
-            $html .= '<i class="bi ' . htmlspecialchars($link['icon']) . ' flex-shrink-0" style="color: ' . htmlspecialchars($link['color']) . '; font-size: 1.15rem; width: 24px; text-align: center; margin-right: 0.75rem;"></i>';
-            $html .= '<span class="text-truncate" style="font-size: 0.9rem; font-weight: ' . ($is_active ? '600' : '500') . ';">' . htmlspecialchars($link['title']) . '</span>';
-            $html .= '</div>';
-            $html .= '<i class="bi bi-chevron-right text-muted flex-shrink-0" style="font-size: 0.75rem;"></i>';
-            $html .= '</a>';
-        }
-
-        $html .= '</div>'; // End list-group
-        $html .= '</div>'; // End group body
-        $html .= '</div>'; // End group wrap
+        $html .= '<a href="' . htmlspecialchars($link['url']) . '" class="dw-mobile-nav-link' . $active_class . '" data-mobile-title="' . htmlspecialchars($link['title']) . '">';
+        $html .= '<div class="d-flex align-items-center me-2" style="min-width: 0;">';
+        $html .= '<i class="bi ' . htmlspecialchars($link['icon']) . ' dw-mobile-nav-icon" style="color: ' . htmlspecialchars($link['color']) . ';"></i>';
+        $html .= '<span class="dw-mobile-nav-title">' . htmlspecialchars($link['title']) . '</span>';
+        $html .= '</div>';
+        $html .= '<i class="bi bi-chevron-right dw-mobile-nav-arrow"></i>';
+        $html .= '</a>';
     }
-    $html .= '</div>'; // End dwMobileNavList
+    $html .= '</div>'; // End list
 
-    $html .= '</div>'; // End body
-
-    // Drawer Footer
-    $html .= '<div class="p-3 border-top bg-light mt-auto">';
-    $html .= '<a href="' . BASE_URL . '/admin/logout.php" class="btn btn-outline-danger btn-sm w-100 py-2 font-monospace fw-semibold" style="font-size: 0.825rem;"><i class="bi bi-box-arrow-right me-1"></i> Logout Account</a>';
+    // Drawer Bottom Logout Button (Clean Outline Style)
+    $html .= '<div class="pt-3 border-top mt-auto px-1">';
+    $html .= '<a href="' . BASE_URL . '/admin/logout.php" class="btn btn-outline-danger btn-sm w-100 py-2 font-monospace fw-semibold"><i class="bi bi-box-arrow-right me-1"></i> Logout Account</a>';
     $html .= '</div>';
 
+    $html .= '</div>'; // End container
     $html .= '</aside>';
 
     // Drawer Backdrop Overlay
@@ -366,18 +266,4 @@ function render_mobile_navigation_drawer() {
     $html .= '</div>';
 
     return $html;
-}
-
-/**
- * Helper to check if current script is active in any group
- */
-function has_active_in_any($groups, $current_script) {
-    foreach ($groups as $g) {
-        foreach ($g['items'] as $item) {
-            if (strpos($current_script, $item['script_match']) !== false) {
-                return true;
-            }
-        }
-    }
-    return false;
 }

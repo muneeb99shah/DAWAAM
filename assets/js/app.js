@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (mobileSearchInput && mobileNavList) {
         mobileSearchInput.addEventListener('input', function () {
             const query = this.value.trim().toLowerCase();
-            const items = mobileNavList.querySelectorAll('.list-group-item');
+            const items = mobileNavList.querySelectorAll('.dw-mobile-nav-link');
             items.forEach(function (item) {
                 const title = (item.getAttribute('data-mobile-title') || '').toLowerCase();
                 if (!query || title.includes(query)) {
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Close drawer when clicking any link inside
     if (mobileDrawer) {
-        const navLinks = mobileDrawer.querySelectorAll('a.list-group-item');
+        const navLinks = mobileDrawer.querySelectorAll('a.dw-mobile-nav-link');
         navLinks.forEach(function (link) {
             link.addEventListener('click', function () {
                 closeMobileDrawer();

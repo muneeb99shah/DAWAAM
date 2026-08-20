@@ -1219,7 +1219,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     color: var(--dw-emerald-primary) !important;
 }
 
-/* Enterprise Left Mobile Drawer Specs */
+/* ==========================================================================
+   Clean Mobile Left Navigation Drawer (Matching Reference Screenshot)
+   ========================================================================== */
 body.dw-drawer-open {
     overflow: hidden !important;
 }
@@ -1228,16 +1230,14 @@ body.dw-drawer-open {
     position: fixed;
     top: 56px;
     left: -320px;
-    width: 300px;
-    max-width: 85vw;
+    width: 295px;
+    max-width: 82vw;
     height: calc(100vh - 56px - 56px);
     background: #ffffff;
     border-right: 1px solid var(--dw-slate-border);
-    box-shadow: 6px 0 25px rgba(15, 23, 42, 0.18);
+    box-shadow: 6px 0 25px rgba(15, 23, 42, 0.12);
     z-index: 1045;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
 }
@@ -1253,7 +1253,7 @@ body.dw-drawer-open {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 23, 42, 0.4);
+    background: rgba(15, 23, 42, 0.35);
     backdrop-filter: blur(2px);
     z-index: 1040;
     opacity: 0;
@@ -1266,41 +1266,82 @@ body.dw-drawer-open {
     visibility: visible;
 }
 
-/* Accordion Group Header Styling */
-.dw-mobile-group-header {
-    transition: background-color 0.15s ease;
+/* Reference Search Input Box */
+.dw-mobile-search-input {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 0.6rem 0.9rem !important;
+    font-size: 0.875rem !important;
+    color: #1e293b !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.dw-mobile-group-header:hover {
-    background-color: #f1f5f9 !important;
+.dw-mobile-search-input:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
 }
 
-.dw-mobile-drawer .list-group-item {
-    min-height: 44px;
-    padding: 0.65rem 1rem;
-    border: none;
-    border-radius: 6px;
-    margin-bottom: 2px;
-    font-size: 0.9rem;
-    color: var(--dw-text-main);
+/* Reference Navigation Item Link */
+.dw-mobile-nav-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0.75rem 0.85rem;
+    min-height: 48px;
+    border-radius: 8px;
     text-decoration: none;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    color: #1e293b;
+    font-size: 0.925rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
-.dw-mobile-drawer .list-group-item:hover,
-.dw-mobile-drawer .list-group-item:active {
-    background-color: var(--dw-slate-light);
-    color: var(--dw-emerald-hover);
+.dw-mobile-nav-link:hover {
+    background: #f8fafc;
+    color: #0f172a;
 }
 
-.dw-mobile-drawer .list-group-item.active {
-    background-color: #ecfdf5 !important;
-    color: #047857 !important;
+/* Active Item Styling (Matching Reference Image) */
+.dw-mobile-nav-link.active {
+    background: #f0f5ff !important;
+    color: #2563eb !important;
     font-weight: 600 !important;
-    border-left: 3.5px solid #059669 !important;
+}
+
+.dw-mobile-nav-link.active .dw-mobile-nav-icon {
+    color: #2563eb !important;
+}
+
+.dw-mobile-nav-link.active .dw-mobile-nav-arrow {
+    color: #2563eb !important;
+}
+
+.dw-mobile-nav-icon {
+    font-size: 1.2rem;
+    width: 26px;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 0.75rem;
+}
+
+.dw-mobile-nav-title {
+    font-size: 0.925rem;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dw-mobile-nav-arrow {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    transition: color 0.15s ease;
+    flex-shrink: 0;
 }
 
 /* Viewport Breakpoint Adjustments */
