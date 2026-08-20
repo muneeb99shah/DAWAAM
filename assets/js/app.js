@@ -49,45 +49,66 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 6000);
     });
 
-    // Collapsible & Expandable Operational Sidebar Controller
+    // Desktop 3-State Sidebar Controller (1. Collapsed Default | 2. Hover Overlay | 3. Pinned Fixed)
     const sidebar = document.getElementById('dw-main-sidebar');
+    const outerWrap = document.getElementById('dw-sidebar-outer-wrap');
     const toggleBtn = document.getElementById('dw-sidebar-toggle-btn');
     const searchInput = document.getElementById('dw-sidebar-search-input');
 
     if (sidebar && toggleBtn) {
-        // Read saved user preference from localStorage (default: collapsed)
-        const savedState = localStorage.getItem('dw_sidebar_state');
-        if (savedState === 'expanded') {
-            expandSidebar();
+        // Read saved user pinned preference from localStorage (default: unpinned / collapsed)
+        const isPinned = localStorage.getItem('dw_sidebar_pinned') === 'true';
+        if (isPinned) {
+            pinSidebar();
         } else {
-            collapseSidebar();
+            unpinSidebar();
         }
 
+        // Toggle Control Arrow Click Handler
         toggleBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            if (sidebar.classList.contains('dw-sidebar-expanded')) {
-                collapseSidebar();
-                localStorage.setItem('dw_sidebar_state', 'collapsed');
+            if (sidebar.classList.contains('dw-sidebar-pinned')) {
+                unpinSidebar();
+                localStorage.setItem('dw_sidebar_pinned', 'false');
             } else {
-                expandSidebar();
-                localStorage.setItem('dw_sidebar_state', 'expanded');
+                pinSidebar();
+                localStorage.setItem('dw_sidebar_pinned', 'true');
             }
         });
 
-        function expandSidebar() {
-            sidebar.classList.remove('dw-sidebar-collapsed');
-            sidebar.classList.add('dw-sidebar-expanded');
-            toggleBtn.setAttribute('title', 'Collapse Sidebar Navigation');
+        // Hover Temporary Expansion Overlay Handlers (Desktop & Tablet >= 768px)
+        sidebar.addEventListener('mouseenter', function () {
+            if (!sidebar.classList.contains('dw-sidebar-pinned') && window.innerWidth >= 768) {
+                sidebar.classList.add('dw-sidebar-hover-expanded');
+            }
+        });
+
+        sidebar.addEventListener('mouseleave', function () {
+            if (!sidebar.classList.contains('dw-sidebar-pinned') && window.innerWidth >= 768) {
+                sidebar.classList.remove('dw-sidebar-hover-expanded');
+                if (searchInput && searchInput.value) {
+                    searchInput.value = '';
+                    filterSidebarItems('');
+                }
+            }
+        });
+
+        function pinSidebar() {
+            sidebar.classList.remove('dw-sidebar-collapsed', 'dw-sidebar-hover-expanded');
+            sidebar.classList.add('dw-sidebar-pinned');
+            if (outerWrap) outerWrap.classList.add('dw-sidebar-pinned-wrap');
+            toggleBtn.setAttribute('title', 'Unpin / Collapse Sidebar Navigation');
             const icon = toggleBtn.querySelector('.dw-toggle-icon');
             if (icon) {
                 icon.className = 'bi bi-chevron-double-left dw-toggle-icon';
             }
         }
 
-        function collapseSidebar() {
-            sidebar.classList.remove('dw-sidebar-expanded');
+        function unpinSidebar() {
+            sidebar.classList.remove('dw-sidebar-pinned', 'dw-sidebar-hover-expanded');
             sidebar.classList.add('dw-sidebar-collapsed');
-            toggleBtn.setAttribute('title', 'Expand Sidebar Navigation');
+            if (outerWrap) outerWrap.classList.remove('dw-sidebar-pinned-wrap');
+            toggleBtn.setAttribute('title', 'Pin / Expand Sidebar Navigation');
             const icon = toggleBtn.querySelector('.dw-toggle-icon');
             if (icon) {
                 icon.className = 'bi bi-chevron-double-right dw-toggle-icon';

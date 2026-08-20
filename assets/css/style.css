@@ -700,8 +700,21 @@ thead.table-dark th,
 }
 
 /* ==========================================================================
-   Collapsible & Expandable Quick Access Sidebar & Hover Tooltips
+   Desktop 3-State Sidebar (1. Collapsed Default | 2. Hover Overlay | 3. Pinned Fixed)
    ========================================================================== */
+
+/* Outer Wrapper (Controls main content grid allocation) */
+.dw-sidebar-outer-wrap {
+    width: 60px;
+    position: relative;
+    transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dw-sidebar-outer-wrap.dw-sidebar-pinned-wrap {
+    width: 240px !important;
+}
+
+/* Sidebar Container Base */
 .dw-sidebar, .dw-quick-sidebar-compact {
     background: #ffffff;
     border: 1px solid var(--dw-slate-border);
@@ -709,25 +722,45 @@ thead.table-dark th,
     box-shadow: var(--dw-shadow-sm);
     display: flex;
     flex-direction: column;
-    position: sticky;
-    top: 1rem;
-    z-index: 1020;
-    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0.5rem 0;
+    transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s ease;
     overflow: visible;
     margin-bottom: 1.5rem;
 }
 
+/* Collapsed State (Default Mode) */
 .dw-sidebar.dw-sidebar-collapsed, .dw-quick-sidebar-compact {
     width: 60px;
-    padding: 0.5rem 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1020;
 }
 
-.dw-sidebar.dw-sidebar-expanded {
-    width: 240px;
-    padding: 0.5rem 0;
+/* Pinned State (Permanent Fixed Expansion) */
+.dw-sidebar.dw-sidebar-pinned {
+    width: 240px !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 1020 !important;
 }
 
-/* Sidebar Header & Toggle Control Button */
+/* Hover State (Temporary Floating Overlay on Collapsed Sidebar) */
+@media (min-width: 768px) {
+    .dw-sidebar-outer-wrap:hover .dw-sidebar.dw-sidebar-collapsed,
+    .dw-sidebar.dw-sidebar-collapsed:hover,
+    .dw-sidebar.dw-sidebar-hover-expanded {
+        width: 240px !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        z-index: 1050 !important;
+        box-shadow: 8px 0 25px rgba(15, 23, 42, 0.16) !important;
+    }
+}
+
+/* Header & Control Button */
 .dw-sidebar-header {
     display: flex;
     align-items: center;
@@ -740,9 +773,10 @@ thead.table-dark th,
     justify-content: center;
 }
 
-.dw-sidebar-expanded .dw-sidebar-header {
-    justify-content: flex-start;
-    padding-left: 0.75rem;
+.dw-sidebar-pinned .dw-sidebar-header,
+.dw-sidebar-hover-expanded .dw-sidebar-header {
+    justify-content: flex-start !important;
+    padding-left: 0.75rem !important;
 }
 
 .dw-sidebar-toggle-btn {
@@ -765,14 +799,26 @@ thead.table-dark th,
     color: var(--dw-emerald-hover);
 }
 
-/* Search Wrapper in Expanded Mode */
+/* Search Wrapper in Expanded/Hover Mode */
 .dw-sidebar-search-wrap {
     padding: 0 0.6rem 0.5rem 0.6rem;
     display: none;
 }
 
-.dw-sidebar-expanded .dw-sidebar-search-wrap {
-    display: block;
+.dw-sidebar-pinned .dw-sidebar-search-wrap,
+.dw-sidebar-hover-expanded .dw-sidebar-search-wrap {
+    display: block !important;
+}
+
+@media (min-width: 768px) {
+    .dw-sidebar-outer-wrap:hover .dw-sidebar-search-wrap {
+        display: block !important;
+    }
+
+    .dw-sidebar-outer-wrap:hover .dw-sidebar-header {
+        justify-content: flex-start !important;
+        padding-left: 0.75rem !important;
+    }
 }
 
 /* Navigation Items Stack */
@@ -804,11 +850,25 @@ thead.table-dark th,
     margin: 0 auto;
 }
 
-.dw-sidebar-expanded .dw-sidebar-link {
-    width: 100%;
-    height: 40px;
-    padding: 0 0.75rem;
-    justify-content: flex-start;
+.dw-sidebar-pinned .dw-sidebar-link,
+.dw-sidebar-hover-expanded .dw-sidebar-link {
+    width: 100% !important;
+    height: 40px !important;
+    padding: 0 0.75rem !important;
+    justify-content: flex-start !important;
+}
+
+@media (min-width: 768px) {
+    .dw-sidebar-outer-wrap:hover .dw-sidebar-link {
+        width: 100% !important;
+        height: 40px !important;
+        padding: 0 0.75rem !important;
+        justify-content: flex-start !important;
+    }
+
+    .dw-sidebar-outer-wrap:hover .dw-sidebar-icon {
+        margin-right: 0.75rem !important;
+    }
 }
 
 /* Icon */
@@ -825,8 +885,9 @@ thead.table-dark th,
     margin: 0;
 }
 
-.dw-sidebar-expanded .dw-sidebar-icon {
-    margin-right: 0.75rem;
+.dw-sidebar-pinned .dw-sidebar-icon,
+.dw-sidebar-hover-expanded .dw-sidebar-icon {
+    margin-right: 0.75rem !important;
 }
 
 /* Text Label in Expanded Mode */
@@ -837,8 +898,15 @@ thead.table-dark th,
     display: none;
 }
 
-.dw-sidebar-expanded .dw-sidebar-label {
-    display: block;
+.dw-sidebar-pinned .dw-sidebar-label,
+.dw-sidebar-hover-expanded .dw-sidebar-label {
+    display: block !important;
+}
+
+@media (min-width: 768px) {
+    .dw-sidebar-outer-wrap:hover .dw-sidebar-label {
+        display: block !important;
+    }
 }
 
 /* Right Chevron Arrow in Expanded Mode */
@@ -850,8 +918,27 @@ thead.table-dark th,
     transition: transform 0.15s ease, color 0.15s ease;
 }
 
-.dw-sidebar-expanded .dw-sidebar-arrow {
-    display: inline-block;
+.dw-sidebar-pinned .dw-sidebar-arrow,
+.dw-sidebar-hover-expanded .dw-sidebar-arrow {
+    display: inline-block !important;
+}
+
+@media (min-width: 768px) {
+    .dw-sidebar-outer-wrap:hover .dw-sidebar-arrow {
+        display: inline-block !important;
+    }
+}
+
+/* Hide floating tooltip when labels are visible */
+.dw-sidebar-pinned .dw-sidebar-tooltip,
+.dw-sidebar-hover-expanded .dw-sidebar-tooltip {
+    display: none !important;
+}
+
+@media (min-width: 768px) {
+    .dw-sidebar-outer-wrap:hover .dw-sidebar-tooltip {
+        display: none !important;
+    }
 }
 
 /* Hover & Active States */
