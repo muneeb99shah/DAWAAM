@@ -655,16 +655,33 @@ thead.table-dark th,
         padding: 0.65rem 1rem !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
+    .dw-lan-server-badge, .dw-badge-lan {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: flex-start !important;
+        box-sizing: border-box !important;
+    }
     .dw-user-btn {
         max-width: 100% !important;
         width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        box-sizing: border-box !important;
     }
     .dw-user-name-text {
-        max-width: 100% !important;
+        max-width: none !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
-    .dw-lan-server-badge, .dw-badge-lan {
-        width: 100%;
-        justify-content: flex-start;
+    .navbar-collapse .dropdown {
+        width: 100% !important;
+    }
+    .navbar-collapse .dropdown-menu {
+        width: 100% !important;
     }
 }
 
