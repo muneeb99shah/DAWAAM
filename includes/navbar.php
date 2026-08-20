@@ -61,28 +61,28 @@ $brand_target = $user ? (BASE_URL . '/admin/index.php') : (BASE_URL . '/index.ph
                 <?php endif; ?>
             </ul>
 
-            <div class="d-flex flex-column flex-xl-row align-items-stretch align-items-xl-center gap-2 gap-xl-3 pt-3 pt-xl-0 border-top border-xl-0 border-secondary border-opacity-25 w-100 w-xl-auto">
+            <div class="d-flex flex-column flex-xl-row align-items-start align-items-xl-center gap-2 gap-xl-3 pt-3 pt-xl-0 border-top border-xl-0 border-secondary border-opacity-25">
                 <!-- Local LAN Server IP Badge (Text-Only) -->
-                <div class="dw-lan-server-badge text-nowrap w-100 w-xl-auto">
+                <div class="dw-lan-server-badge text-nowrap">
                     <span class="text-white-50">LAN Server:</span>
                     <strong class="text-white font-monospace ms-1"><?php echo SERVER_LAN_IP; ?>:8000</strong>
                 </div>
 
                 <!-- Network Status Badge -->
-                <div id="dw-network-status" class="dw-badge-lan text-nowrap w-100 w-xl-auto">
+                <div id="dw-network-status" class="dw-badge-lan text-nowrap">
                     <span class="dw-status-pulse"></span>
                     <span>Local LAN Active</span>
                 </div>
 
                 <?php if ($user): ?>
                     <div class="dropdown text-nowrap w-100 w-xl-auto">
-                        <button class="btn btn-outline-light dropdown-toggle btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center justify-content-between w-100 w-xl-auto dw-user-btn" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="d-inline-flex align-items-center gap-2 me-2" style="min-width: 0;">
-                                <i class="bi bi-person-circle fs-6 flex-shrink-0"></i> 
+                        <button class="btn btn-outline-light dropdown-toggle btn-sm rounded-pill px-3 py-1.5 fw-semibold d-flex align-items-center justify-content-between justify-content-xl-start dw-user-btn" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-person-circle fs-6"></i> 
                                 <span class="dw-user-name-text"><?php echo sanitize($user['name']); ?></span>
                             </span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 w-100 w-xl-auto" aria-labelledby="userMenu">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2" aria-labelledby="userMenu">
                             <li><h6 class="dropdown-header text-uppercase text-muted fw-bold small">Logged in as <?php echo sanitize($user['username']); ?></h6></li>
                             <li><span class="dropdown-item-text text-muted small">Code: <code><?php echo sanitize($user['user_code']); ?></code></span></li>
                             <li><hr class="dropdown-divider"></li>
