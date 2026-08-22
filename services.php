@@ -161,8 +161,8 @@ if ((!isset($pdo) || !$pdo || $db_error_occurred) && $selected_cat > 0) {
     <?php if (count($services) > 0): ?>
         <?php foreach ($services as $srv): 
             $img_path = !empty($srv['image_path']) ? $srv['image_path'] : '';
-            if (!empty($img_path) && !file_exists(__DIR__ . '/' . $img_path)) {
-                $svg_path = preg_replace('/\.jpg$/i', '.svg', $img_path);
+            if (!empty($img_path)) {
+                $svg_path = preg_replace('/\.(jpg|jpeg|png)$/i', '.svg', $img_path);
                 if (file_exists(__DIR__ . '/' . $svg_path)) {
                     $img_path = $svg_path;
                 }

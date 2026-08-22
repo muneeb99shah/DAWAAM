@@ -211,30 +211,9 @@ function render_mobile_navigation_drawer() {
     $html .= '<input type="text" id="dw-mobile-search-input" class="form-control dw-mobile-search-input" placeholder="Search Menu..." autocomplete="off">';
     $html .= '</div>';
 
-    $main_links = [];
-    $system_links = [];
-    $system_script_matches = ['/admin/sync/', '/admin/network/', '/admin/sms/', '/admin/users/'];
-
-    foreach ($authorized_links as $link) {
-        $is_sys = false;
-        foreach ($system_script_matches as $sm) {
-            if (strpos($link['script_match'], $sm) !== false) {
-                $is_sys = true;
-                break;
-            }
-        }
-        if ($is_sys) {
-            $system_links[] = $link;
-        } else {
-            $main_links[] = $link;
-        }
-    }
-
     // Navigation Links List (Clean Flat Stack with Icons, Titles & Chevron Arrows)
     $html .= '<div class="list-group list-group-flush border-0 flex-grow-1 px-1" id="dwMobileNavList" style="overflow-y: auto; -webkit-overflow-scrolling: touch;">';
-    
-    // Main Operational Navigation Links
-    foreach ($main_links as $link) {
+    foreach ($authorized_links as $link) {
         $is_active = (strpos($current_script, $link['script_match']) !== false);
         $active_class = $is_active ? ' active' : '';
 
@@ -246,47 +225,6 @@ function render_mobile_navigation_drawer() {
         $html .= '<i class="bi bi-chevron-right dw-mobile-nav-arrow"></i>';
         $html .= '</a>';
     }
-
-    // Expandable System Administration Section
-    if (!empty($system_links)) {
-        $is_sys_active = false;
-        foreach ($system_links as $slink) {
-            if (strpos($current_script, $slink['script_match']) !== false) {
-                $is_sys_active = true;
-                break;
-            }
-        }
-
-        $sys_chevron_class = $is_sys_active ? 'bi-chevron-down text-primary fw-bold' : 'bi-chevron-right text-muted';
-        $sys_expanded_attr = $is_sys_active ? 'true' : 'false';
-        $sys_active_class = $is_sys_active ? ' active' : '';
-
-        $html .= '<button type="button" class="dw-mobile-nav-link dw-mobile-group-header w-100 border-0 bg-transparent text-start d-flex align-items-center justify-content-between my-1' . $sys_active_class . '" data-group-target="#dwSystemAdminGroup" aria-expanded="' . $sys_expanded_attr . '" data-mobile-title="System Administration">';
-        $html .= '<div class="d-flex align-items-center me-2" style="min-width: 0;">';
-        $html .= '<i class="bi bi-shield-lock-fill dw-mobile-nav-icon" style="color: #6366f1;"></i>';
-        $html .= '<span class="dw-mobile-nav-title fw-bold text-dark fs-6" style="white-space: nowrap; overflow: visible;">System Administration</span>';
-        $html .= '</div>';
-        $html .= '<i class="bi ' . $sys_chevron_class . ' dw-mobile-nav-arrow dw-group-chevron"></i>';
-        $html .= '</button>';
-
-        $sys_group_body_class = $is_sys_active ? 'show' : 'd-none';
-
-        $html .= '<div id="dwSystemAdminGroup" class="dw-group-body ' . $sys_group_body_class . ' ps-3 border-start ms-3 my-1">';
-        foreach ($system_links as $link) {
-            $is_active = (strpos($current_script, $link['script_match']) !== false);
-            $active_class = $is_active ? ' active' : '';
-
-            $html .= '<a href="' . htmlspecialchars($link['url']) . '" class="dw-mobile-nav-link' . $active_class . '" data-mobile-title="' . htmlspecialchars($link['title']) . '">';
-            $html .= '<div class="d-flex align-items-center me-2" style="min-width: 0;">';
-            $html .= '<i class="bi ' . htmlspecialchars($link['icon']) . ' dw-mobile-nav-icon" style="color: ' . htmlspecialchars($link['color']) . ';"></i>';
-            $html .= '<span class="dw-mobile-nav-title">' . htmlspecialchars($link['title']) . '</span>';
-            $html .= '</div>';
-            $html .= '<i class="bi bi-chevron-right dw-mobile-nav-arrow"></i>';
-            $html .= '</a>';
-        }
-        $html .= '</div>';
-    }
-
     $html .= '</div>'; // End list
 
     // Drawer Bottom Logout Button (Clean Outline Style)
