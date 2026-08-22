@@ -7,6 +7,7 @@
 require_once __DIR__ . '/../../config/app.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/pos_document_component.php';
 
 require_permission('sales.view');
 
@@ -19,7 +20,8 @@ if ($sale_id <= 0) {
 $pdo = get_db_connection();
 
 $stmt = $pdo->prepare("
-    SELECT s.id, s.sale_code, s.customer_name, s.customer_phone, s.quantity, s.unit_price, s.subtotal,
+    SELECT s.id, s.sale_code, s.customer_name, s.customer_phone, s.customer_email, s.customer_address, s.customer_tax_id,
+           s.quantity, s.unit_price, s.subtotal,
            s.discount_type, s.discount_val, s.discount_amount, s.tax_amount, s.total_price,
            s.payment_method, s.payment_ref, s.amount_received, s.change_amount, s.remaining_amount, s.payment_status, s.sold_at,
            p.name AS product_name, p.sku AS product_sku, c.name AS category_name,
@@ -95,9 +97,9 @@ require_once __DIR__ . '/../../includes/header.php';
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="fw-bold text-dark d-block mb-1">
-                        <i class="bi bi-printer text-success me-1"></i> Receipt & Printer Setup
+                        <i class="bi bi-printer text-success me-1"></i> Receipt &amp; Printer Setup
                     </span>
-                    <span class="small text-muted">Select printer paper format:</span>
+                    <span class="small text-muted">Select paper/screen format:</span>
                     <div class="btn-group btn-group-sm ms-2" role="group" aria-label="Paper Format Selector">
                         <button type="button" class="btn btn-outline-success active dw-paper-btn" onclick="setPaperFormat('80mm', this)">
                             Thermal 80mm
@@ -130,116 +132,8 @@ require_once __DIR__ . '/../../includes/header.php';
 
         <!-- Receipt Box Container -->
         <div class="table-responsive bg-white rounded-3 shadow-sm border-0 p-2">
-            <div id="dw-receipt-container" class="dw-card p-3 bg-white receipt-box paper-format-80mm">
-                <div class="text-center pb-2 mb-2 border-bottom border-2 border-dark">
-                    <div class="d-inline-flex align-items-center gap-2 mb-1">
-                        <i class="bi bi-shield-check text-success fs-4"></i>
-                        <h4 class="fw-bold mb-0 text-dark"><?php echo APP_NAME; ?> PHARMACY</h4>
-                    </div>
-                    <div class="small text-muted fw-semibold">Quetta Medical & Continuity Center</div>
-                    <div class="text-muted" style="font-size: 0.65rem;">MA Jinnah Road, Quetta, Balochistan, Pakistan</div>
-                    <div class="font-monospace text-muted" style="font-size: 0.6rem;">LAN Local POS Active</div>
-                </div>
-
-                <!-- Receipt Invoice Info Header -->
-                <div class="row g-2 mb-2 pb-2 border-bottom small" style="font-size: 0.7rem;">
-                    <div class="col-6">
-                        <span class="text-muted d-block">Invoice / Receipt Code:</span>
-                        <strong class="font-monospace text-dark d-block receipt-meta-val"><?php echo sanitize($sale['sale_code']); ?></strong>
-                    </div>
-                    <div class="col-6 text-end">
-                        <span class="text-muted d-block">Date & Time:</span>
-                        <strong class="text-dark d-block receipt-meta-val"><?php echo format_date($sale['sold_at'], 'd M Y, h:i A'); ?></strong>
-                    </div>
-                    <div class="col-6">
-                        <span class="text-muted d-block">Customer:</span>
-                        <strong class="text-dark d-block receipt-meta-val"><?php echo sanitize($sale['customer_name'] ?? 'Walk-in Customer'); ?></strong>
-                    </div>
-                    <div class="col-6 text-end">
-                        <span class="text-muted d-block">Cashier:</span>
-                        <strong class="text-dark d-block receipt-meta-val"><?php echo sanitize($sale['cashier_name']); ?></strong>
-                    </div>
-                </div>
-
-                <!-- Purchased Item Table -->
-                <table class="table table-sm border-top border-bottom my-2 align-middle" style="table-layout: fixed; width: 100%;">
-                    <thead>
-                        <tr class="table-light small">
-                            <th style="width: 44%;">Item</th>
-                            <th class="text-center" style="width: 12%; white-space: nowrap;">Qty</th>
-                            <th class="text-end" style="width: 22%; white-space: nowrap;">Price</th>
-                            <th class="text-end" style="width: 22%; white-space: nowrap;">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody class="small">
-                        <?php foreach ($items as $it): ?>
-                            <tr>
-                                <td style="word-break: break-word; padding-right: 2px;">
-                                    <strong class="text-dark d-block"><?php echo sanitize($it['product_name']); ?></strong>
-                                    <span class="text-muted font-monospace" style="font-size: 0.65rem;">SKU: <?php echo sanitize($it['product_sku']); ?></span>
-                                </td>
-                                <td class="text-center fw-bold text-dark" style="white-space: nowrap;"><?php echo number_format($it['quantity']); ?></td>
-                                <td class="text-end text-muted font-monospace" style="white-space: nowrap; font-size: 0.7rem;"><?php echo number_format($it['unit_price'], 2); ?></td>
-                                <td class="text-end fw-bold text-dark font-monospace" style="white-space: nowrap; font-size: 0.7rem;"><?php echo number_format($it['total_price'], 2); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-
-                <!-- Financial Summary Breakdown Box -->
-                <div class="p-2 bg-light rounded-3 my-2">
-                    <div class="d-flex justify-content-between mb-1 small">
-                        <span class="text-muted">Subtotal:</span>
-                        <strong class="font-monospace text-dark">PKR <?php echo number_format($sale['subtotal'], 2); ?></strong>
-                    </div>
-                    <?php if ($sale['discount_amount'] > 0): ?>
-                        <div class="d-flex justify-content-between mb-1 small text-danger">
-                            <span>Discount (<?php echo sanitize($sale['discount_val']); ?><?php echo in_array($sale['discount_type'], ['percent', 'percentage'], true) ? '%' : ' PKR'; ?>):</span>
-                            <strong class="font-monospace">- PKR <?php echo number_format($sale['discount_amount'], 2); ?></strong>
-                        </div>
-                    <?php endif; ?>
-                    <?php if ($sale['tax_amount'] > 0): ?>
-                        <div class="d-flex justify-content-between mb-1 small text-muted">
-                            <span>Sales Tax:</span>
-                            <strong class="font-monospace">+ PKR <?php echo number_format($sale['tax_amount'], 2); ?></strong>
-                        </div>
-                    <?php endif; ?>
-                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-dark">
-                        <span class="fw-bold text-dark total-payable-label" style="font-size: 0.85rem;">TOTAL PAYABLE:</span>
-                        <strong class="fw-bold text-dark font-monospace total-payable-amount" style="font-size: 0.95rem;">PKR <?php echo number_format($sale['total_price'], 2); ?></strong>
-                    </div>
-                </div>
-
-                <!-- Payment Details Grid -->
-                <div class="p-2 border rounded-3 bg-white my-2">
-                    <div class="row g-1 small">
-                        <div class="col-6">
-                            <span class="text-muted d-block" style="font-size: 0.65rem;">Payment Method:</span>
-                            <strong class="text-dark uppercase" style="font-size: 0.75rem;"><i class="bi bi-wallet2 me-1"></i> <?php echo str_replace('_', ' ', $sale['payment_method']); ?></strong>
-                            <?php if (!empty($sale['payment_ref'])): ?>
-                                <span class="d-block font-monospace text-muted" style="font-size: 0.65rem;">Ref: <?php echo sanitize($sale['payment_ref']); ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-6 text-end">
-                            <span class="text-muted d-block" style="font-size: 0.65rem;">Customer Paid:</span>
-                            <strong class="text-success font-monospace" style="font-size: 0.85rem;"><?php echo format_currency($sale['amount_received']); ?></strong>
-                        </div>
-                        <div class="col-6 border-top pt-1 mt-1">
-                            <span class="text-muted d-block" style="font-size: 0.65rem;">Payment Status:</span>
-                            <span class="badge bg-success uppercase" style="font-size: 0.65rem;"><?php echo sanitize(strtoupper($sale['payment_status'])); ?></span>
-                        </div>
-                        <div class="col-6 text-end border-top pt-1 mt-1">
-                            <span class="text-muted d-block" style="font-size: 0.65rem;">Change Returned:</span>
-                            <strong class="text-primary font-monospace" style="font-size: 0.85rem;"><?php echo format_currency($sale['change_amount']); ?></strong>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer Message -->
-                <div class="text-center pt-3 border-top small text-muted">
-                    <p class="mb-1 fw-bold text-dark">Thank you for visiting Quetta Pharmacy!</p>
-                    <p class="mb-0">Dawaam Local-First Business Continuity Software &bull; 100% Offline Uptime</p>
-                </div>
+            <div id="dw-receipt-container" class="dw-card p-3 p-md-4 bg-white receipt-box paper-format-80mm">
+                <?php echo render_pos_document($sale, $items, 'receipt'); ?>
             </div>
         </div>
     </div>

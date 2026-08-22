@@ -92,10 +92,14 @@ function csrf_field() {
 }
 
 /**
- * Format currency amount for Pakistani Rupee (PKR)
+ * Format currency amount with dynamic international currency support
  */
-function format_currency($amount) {
-    return 'PKR ' . number_format((float)$amount, 2);
+function format_currency($amount, $currency_symbol = null) {
+    if ($currency_symbol === null) {
+        $biz = function_exists('get_business_profile') ? get_business_profile() : [];
+        $currency_symbol = $biz['currency_symbol'] ?? 'PKR ';
+    }
+    return $currency_symbol . number_format((float)$amount, 2);
 }
 
 /**

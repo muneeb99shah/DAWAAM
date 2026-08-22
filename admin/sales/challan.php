@@ -7,6 +7,7 @@
 require_once __DIR__ . '/../../config/app.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/pos_document_component.php';
 
 require_permission('sales.view');
 
@@ -19,7 +20,8 @@ if ($sale_id <= 0) {
 $pdo = get_db_connection();
 
 $stmt = $pdo->prepare("
-    SELECT s.id, s.sale_code, s.customer_name, s.customer_phone, s.quantity, s.unit_price, s.subtotal,
+    SELECT s.id, s.sale_code, s.customer_name, s.customer_phone, s.customer_email, s.customer_address, s.customer_tax_id,
+           s.quantity, s.unit_price, s.subtotal,
            s.payment_method, s.payment_status, s.sold_at,
            p.name AS product_name, p.sku AS product_sku,
            u.name AS cashier_name, u.user_code AS cashier_code
@@ -39,7 +41,7 @@ if (!$sale) {
 
 // Fetch line items from sale_items
 $stmt_items = $pdo->prepare("
-    SELECT si.quantity, p.name AS product_name, p.sku AS product_sku
+    SELECT si.quantity, si.unit_price, si.total_price, p.name AS product_name, p.sku AS product_sku
     FROM sale_items si
     INNER JOIN products p ON si.product_id = p.id
     WHERE si.sale_id = :sale_id
@@ -51,7 +53,9 @@ if (empty($items)) {
     $items = [[
         'product_name' => $sale['product_name'],
         'product_sku' => $sale['product_sku'],
-        'quantity' => $sale['quantity']
+        'quantity' => $sale['quantity'],
+        'unit_price' => $sale['unit_price'],
+        'total_price' => $sale['subtotal']
     ]];
 }
 
@@ -119,95 +123,9 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
 
         <!-- Goods Delivery Challan Document Container -->
-        <div id="dw-challan-container" class="dw-card p-4 bg-white shadow-sm challan-box paper-format-challan">
-            <!-- Challan Header Section -->
-            <div class="row align-items-center pb-3 mb-3 border-bottom border-2 border-dark">
-                <div class="col-7">
-                    <div class="d-flex align-items-center gap-2 mb-1">
-                        <i class="bi bi-box-seam-fill text-success fs-3"></i>
-                        <h4 class="fw-bold mb-0 text-dark" style="font-size: 1.15rem;"><?php echo APP_NAME; ?> DISPATCH & LOGISTICS</h4>
-                    </div>
-                    <div class="small text-muted fw-semibold" style="font-size: 0.8125rem;">Store Dispatch Gate & Central Warehouse &bull; Quetta Facility</div>
-                </div>
-                <div class="col-5 text-end">
-                    <h3 class="fw-extrabold text-uppercase text-dark mb-0" style="font-size: 1.25rem; letter-spacing: 0.03em;">DELIVERY CHALLAN</h3>
-                    <span class="small font-monospace text-muted" style="font-size: 0.75rem;">Gate Pass No: GP-<?php echo sanitize($sale['id']); ?></span>
-                </div>
-            </div>
-
-            <!-- Challan Grid Info -->
-            <div class="row mb-3 small" style="font-size: 0.8125rem;">
-                <div class="col-6">
-                    <div class="p-3 bg-light rounded border h-100">
-                        <span class="text-muted d-block fw-bold small text-uppercase mb-1" style="font-size: 0.7rem;">Consignee / Recipient:</span>
-                        <strong class="text-dark d-block" style="font-size: 0.9rem;"><?php echo sanitize($sale['customer_name'] ?? 'Walk-in Customer'); ?></strong>
-                        <?php if (!empty($sale['customer_phone'])): ?>
-                            <span class="d-block font-monospace text-muted" style="font-size: 0.75rem;"><i class="bi bi-telephone me-1"></i> <?php echo sanitize($sale['customer_phone']); ?></span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="p-3 bg-light rounded border h-100">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Challan No:</span>
-                            <strong class="font-monospace text-dark">CH-<?php echo sanitize($sale['sale_code']); ?></strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Dispatch Date:</span>
-                            <strong class="text-dark"><?php echo format_date($sale['sold_at']); ?></strong>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Dispatcher Staff:</span>
-                            <strong class="text-dark"><?php echo sanitize($sale['cashier_name']); ?></strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Goods Item Table -->
-            <table class="table table-bordered table-sm align-middle mb-4" style="table-layout: fixed; width: 100%;">
-                <thead class="table-dark text-uppercase small" style="font-size: 0.75rem;">
-                    <tr>
-                        <th class="text-center" style="width: 8%;">S.No</th>
-                        <th style="width: 52%;">Dispatched Item</th>
-                        <th style="width: 20%;">Product Code / SKU</th>
-                        <th class="text-center" style="width: 20%;">Qty Delivered</th>
-                    </tr>
-                </thead>
-                <tbody class="small" style="font-size: 0.8125rem;">
-                    <?php $sno = 1; foreach ($items as $it): ?>
-                        <tr>
-                            <td class="text-center font-monospace" style="font-size: 0.75rem;"><?php echo $sno++; ?></td>
-                            <td class="fw-semibold text-dark" style="word-break: break-word; font-size: 0.8125rem;"><?php echo sanitize($it['product_name']); ?></td>
-                            <td class="font-monospace text-muted" style="font-size: 0.75rem;"><?php echo sanitize($it['product_sku']); ?></td>
-                            <td class="text-center fw-semibold text-dark" style="font-size: 0.8125rem;"><?php echo number_format($it['quantity']); ?> units</td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-
-            <!-- Physical Verification Note -->
-            <div class="p-2 bg-light rounded border mb-4 small" style="font-size: 0.75rem;">
-                <strong class="text-dark">Delivery Verification:</strong> Received the above dispatched items in complete order and verified condition. Gate clearance granted.
-            </div>
-
-            <!-- Signatures & Verification Row -->
-            <div class="row pt-4 text-center print-avoid-break">
-                <div class="col-4">
-                    <div class="border-top border-dark border-2 pt-2 mt-4 mx-2">
-                        <span class="small text-muted d-block fw-bold" style="font-size: 0.75rem;">Store Keeper / Dispatcher</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="border-top border-dark border-2 pt-2 mt-4 mx-2">
-                        <span class="small text-muted d-block fw-bold" style="font-size: 0.75rem;">Security Gate Stamp</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="border-top border-dark border-2 pt-2 mt-4 mx-2">
-                        <span class="small text-muted d-block fw-bold" style="font-size: 0.75rem;">Receiver's Signature & Date</span>
-                    </div>
-                </div>
+        <div class="table-responsive bg-white rounded-3 shadow-sm border-0">
+            <div id="dw-challan-container" class="dw-card p-4 p-md-5 bg-white challan-box paper-format-challan">
+                <?php echo render_pos_document($sale, $items, 'challan'); ?>
             </div>
         </div>
     </div>
