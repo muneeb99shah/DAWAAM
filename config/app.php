@@ -58,7 +58,7 @@ define('SERVER_LAN_IP', get_server_lan_ip());
  */
 function get_business_profile() {
     return [
-        'name' => APP_NAME . ' Solutions',
+        'name' => 'DAWAAAM Solutions',
         'tagline' => 'Enterprise Medical & Business Continuity Center',
         'logo_icon' => 'bi-shield-check',
         'address_line1' => 'MA Jinnah Road, Quetta',

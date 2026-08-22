@@ -70,20 +70,23 @@ require_once __DIR__ . '/../../includes/header.php';
 @media print {
     @page {
         size: 80mm auto;
-        margin: 2mm 3mm;
+        margin: 0;
     }
-    .dw-navbar, .dw-footer, .no-print, header, nav, footer {
-        display: none !important;
-    }
-    body {
+    html, body {
         background-color: #ffffff !important;
         color: #000000 !important;
-        font-family: var(--dw-font-sans) !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
-    .receipt-box {
+    .dw-navbar, .dw-footer, .no-print, header, nav, footer, .dw-sidebar-outer-wrap, #dwMobileNavDrawer, .dw-mobile-bottom-bar {
+        display: none !important;
+    }
+    .dw-doc-card-container {
         box-shadow: none !important;
         border: none !important;
+        border-radius: 0 !important;
         padding: 0 !important;
+        margin: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
     }
@@ -91,13 +94,13 @@ require_once __DIR__ . '/../../includes/header.php';
 </style>
 
 <div class="row justify-content-center mb-5">
-    <div class="col-md-9 col-lg-8">
+    <div class="col-12 col-xl-10">
         <!-- Action Toolbar & Printer Paper Size Selector -->
-        <div class="card border-0 shadow-sm p-3 mb-3 bg-white no-print">
+        <div class="card border-0 shadow-sm p-3 mb-4 bg-white no-print">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="fw-bold text-dark d-block mb-1">
-                        <i class="bi bi-printer text-success me-1"></i> Receipt &amp; Printer Setup
+                        <i class="bi bi-printer text-success me-1"></i> Receipt &amp; Thermal Printer Setup
                     </span>
                     <span class="small text-muted">Select paper/screen format:</span>
                     <div class="btn-group btn-group-sm ms-2" role="group" aria-label="Paper Format Selector">
@@ -130,11 +133,9 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
         </div>
 
-        <!-- Receipt Box Container -->
-        <div class="table-responsive bg-white rounded-3 shadow-sm border-0 p-2">
-            <div id="dw-receipt-container" class="dw-card p-3 p-md-4 bg-white receipt-box paper-format-80mm">
-                <?php echo render_pos_document($sale, $items, 'receipt'); ?>
-            </div>
+        <!-- Receipt Document Paper Card -->
+        <div id="dw-receipt-container" class="dw-doc-card-container paper-format-80mm">
+            <?php echo render_pos_document($sale, $items, 'receipt'); ?>
         </div>
     </div>
 </div>
@@ -147,21 +148,20 @@ function setPaperFormat(format, btn) {
     document.querySelectorAll('.dw-paper-btn').forEach(b => b.classList.remove('active', 'btn-success', 'btn-secondary'));
     btn.classList.add('active', format.includes('mm') ? 'btn-success' : 'btn-secondary');
 
-    container.classList.remove('paper-format-80mm', 'paper-format-58mm', 'paper-format-a4', 'paper-format-a5');
-    container.classList.add('paper-format-' + format);
+    container.className = 'dw-doc-card-container paper-format-' + format;
 
     let pageCss = '';
     if (format === '80mm') {
-        pageCss = '@page { size: 80mm auto; margin: 2mm 3mm; }';
+        pageCss = '@page { size: 80mm auto; margin: 0; }';
     } else if (format === '58mm') {
-        pageCss = '@page { size: 58mm auto; margin: 2mm 2mm; }';
+        pageCss = '@page { size: 58mm auto; margin: 0; }';
     } else if (format === 'a4') {
         pageCss = '@page { size: A4 portrait; margin: 12mm 15mm; }';
     } else if (format === 'a5') {
         pageCss = '@page { size: A5 portrait; margin: 8mm 10mm; }';
     }
 
-    styleEl.innerHTML = `@media print { ${pageCss} .dw-navbar, .dw-footer, .no-print, header, nav, footer { display: none !important; } body { background-color: #ffffff !important; color: #000000 !important; } .receipt-box { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; } }`;
+    styleEl.innerHTML = `@media print { ${pageCss} html, body { background-color: #ffffff !important; color: #000000 !important; margin: 0 !important; padding: 0 !important; } .dw-navbar, .dw-footer, .no-print, header, nav, footer, .dw-sidebar-outer-wrap, #dwMobileNavDrawer, .dw-mobile-bottom-bar { display: none !important; } .dw-doc-card-container { box-shadow: none !important; border: none !important; border-radius: 0 !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; } }`;
 }
 </script>
 

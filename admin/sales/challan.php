@@ -70,18 +70,21 @@ require_once __DIR__ . '/../../includes/header.php';
         size: A5 landscape;
         margin: 8mm 10mm;
     }
-    .dw-navbar, .dw-footer, .no-print, header, nav, footer {
-        display: none !important;
-    }
-    body {
+    html, body {
         background-color: #ffffff !important;
         color: #000000 !important;
-        font-family: var(--dw-font-sans) !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
-    .challan-box {
+    .dw-navbar, .dw-footer, .no-print, header, nav, footer, .dw-sidebar-outer-wrap, #dwMobileNavDrawer, .dw-mobile-bottom-bar {
+        display: none !important;
+    }
+    .dw-doc-card-container {
         box-shadow: none !important;
         border: none !important;
+        border-radius: 0 !important;
         padding: 0 !important;
+        margin: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
     }
@@ -89,21 +92,27 @@ require_once __DIR__ . '/../../includes/header.php';
 </style>
 
 <div class="row justify-content-center mb-5">
-    <div class="col-md-10 col-lg-9">
+    <div class="col-12 col-xl-10">
         <!-- Action Toolbar & Printer Paper Size Selector -->
-        <div class="card border-0 shadow-sm p-3 mb-3 bg-white no-print">
+        <div class="card border-0 shadow-sm p-3 mb-4 bg-white no-print">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="fw-bold text-dark d-block mb-1">
                         <i class="bi bi-truck text-dark me-1"></i> Delivery Challan Format Setup
                     </span>
-                    <span class="small text-muted">Select physical challan format:</span>
+                    <span class="small text-muted">Select physical format:</span>
                     <div class="btn-group btn-group-sm ms-2" role="group" aria-label="Challan Paper Selector">
                         <button type="button" class="btn btn-outline-dark active dw-ch-paper-btn" onclick="setChallanPaperFormat('a5', this)">
-                            Standard Challan A5 (Landscape)
+                            Standard Challan A5
                         </button>
                         <button type="button" class="btn btn-outline-dark dw-ch-paper-btn" onclick="setChallanPaperFormat('a4', this)">
-                            Full Sheet Challan A4
+                            Full Sheet A4
+                        </button>
+                        <button type="button" class="btn btn-outline-success dw-ch-paper-btn" onclick="setChallanPaperFormat('80mm', this)">
+                            Thermal 80mm
+                        </button>
+                        <button type="button" class="btn btn-outline-success dw-ch-paper-btn" onclick="setChallanPaperFormat('58mm', this)">
+                            Thermal 58mm
                         </button>
                     </div>
                 </div>
@@ -123,10 +132,8 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
 
         <!-- Goods Delivery Challan Document Container -->
-        <div class="table-responsive bg-white rounded-3 shadow-sm border-0">
-            <div id="dw-challan-container" class="dw-card p-4 p-md-5 bg-white challan-box paper-format-challan">
-                <?php echo render_pos_document($sale, $items, 'challan'); ?>
-            </div>
+        <div id="dw-challan-container" class="dw-doc-card-container paper-format-a5">
+            <?php echo render_pos_document($sale, $items, 'challan'); ?>
         </div>
     </div>
 </div>
@@ -136,11 +143,23 @@ function setChallanPaperFormat(format, btn) {
     const container = document.getElementById('dw-challan-container');
     const styleEl = document.getElementById('dw-challan-print-style');
     
-    document.querySelectorAll('.dw-ch-paper-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    document.querySelectorAll('.dw-ch-paper-btn').forEach(b => b.classList.remove('active', 'btn-dark', 'btn-success'));
+    btn.classList.add('active', format.includes('mm') ? 'btn-success' : 'btn-dark');
 
-    let pageCss = (format === 'a4') ? '@page { size: A4 portrait; margin: 12mm 15mm; }' : '@page { size: A5 landscape; margin: 8mm 10mm; }';
-    styleEl.innerHTML = `@media print { ${pageCss} .dw-navbar, .dw-footer, .no-print, header, nav, footer { display: none !important; } body { background-color: #ffffff !important; color: #000000 !important; } .challan-box { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; } }`;
+    container.className = 'dw-doc-card-container paper-format-' + format;
+
+    let pageCss = '';
+    if (format === '80mm') {
+        pageCss = '@page { size: 80mm auto; margin: 0; }';
+    } else if (format === '58mm') {
+        pageCss = '@page { size: 58mm auto; margin: 0; }';
+    } else if (format === 'a4') {
+        pageCss = '@page { size: A4 portrait; margin: 12mm 15mm; }';
+    } else {
+        pageCss = '@page { size: A5 landscape; margin: 8mm 10mm; }';
+    }
+
+    styleEl.innerHTML = `@media print { ${pageCss} html, body { background-color: #ffffff !important; color: #000000 !important; margin: 0 !important; padding: 0 !important; } .dw-navbar, .dw-footer, .no-print, header, nav, footer, .dw-sidebar-outer-wrap, #dwMobileNavDrawer, .dw-mobile-bottom-bar { display: none !important; } .dw-doc-card-container { box-shadow: none !important; border: none !important; border-radius: 0 !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; } }`;
 }
 </script>
 

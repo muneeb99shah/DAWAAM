@@ -1,7 +1,7 @@
 <?php
 /**
  * Dawaam - Local Business Continuity Software
- * Universal International POS Document Component (Receipt / Invoice / Challan / Mobile)
+ * Universal Responsive Thermal & Office POS Document Component (Receipt / Invoice / Challan / Mobile)
  */
 
 require_once __DIR__ . '/../config/app.php';
@@ -10,8 +10,7 @@ require_once __DIR__ . '/auth.php';
 /**
  * Generate Inline SVG QR Code for Document Verification
  */
-function generate_document_qr_svg($data_string, $size = 100) {
-    // Generate a clean vector QR-style matrix representation
+function generate_document_qr_svg($data_string, $size = 90) {
     $hash = md5($data_string);
     $grid_size = 21;
     $cell_size = $size / $grid_size;
@@ -33,7 +32,6 @@ function generate_document_qr_svg($data_string, $size = 100) {
     // Data module grid points based on hash bytes
     for ($r = 0; $r < $grid_size; $r++) {
         for ($c = 0; $c < $grid_size; $c++) {
-            // Skip marker regions
             if (($r < 7 && $c < 7) || ($r < 7 && $c >= 14) || ($r >= 14 && $c < 7)) continue;
             
             $char_idx = ($r * $grid_size + $c) % 32;
@@ -51,7 +49,7 @@ function generate_document_qr_svg($data_string, $size = 100) {
 }
 
 /**
- * Render Universal International POS Document
+ * Render Universal Responsive Thermal & Office POS Document
  *
  * @param array $sale Sale transaction master record
  * @param array $items Array of line items
@@ -65,14 +63,13 @@ function render_pos_document($sale, $items, $doc_type = 'receipt', $custom_biz =
     $currency_symbol = $biz['currency_symbol'] ?? 'PKR ';
     $tax_label = $biz['tax_label'] ?? 'Sales Tax';
     
-    // Basic calculation normalization
+    // Financial calculation normalization
     $subtotal = (float)($sale['subtotal'] ?? 0);
     $discount_amount = (float)($sale['discount_amount'] ?? 0);
     $tax_amount = (float)($sale['tax_amount'] ?? 0);
     $total_price = (float)($sale['total_price'] ?? ($subtotal - $discount_amount + $tax_amount));
     $amount_received = (float)($sale['amount_received'] ?? $total_price);
     $change_amount = (float)($sale['change_amount'] ?? 0);
-    $remaining_amount = (float)($sale['remaining_amount'] ?? 0);
     
     $customer_name = !empty($sale['customer_name']) ? $sale['customer_name'] : 'Walk-in Customer';
     $customer_phone = $sale['customer_phone'] ?? '';
@@ -80,135 +77,126 @@ function render_pos_document($sale, $items, $doc_type = 'receipt', $custom_biz =
     $customer_address = $sale['customer_address'] ?? '';
     $customer_tax_id = $sale['customer_tax_id'] ?? '';
     
-    $cashier_name = $sale['cashier_name'] ?? 'System Operator';
+    $cashier_name = $sale['cashier_name'] ?? 'System Administrator';
     $terminal_id = $sale['terminal_id'] ?? 'POS-01';
     $sold_at = format_date($sale['sold_at'] ?? date('Y-m-d H:i:s'));
     $sale_code = $sale['sale_code'] ?? ('DW-' . rand(1000, 9999));
     
-    $verification_url = BASE_URL . '/admin/sales/receipt.php?id=' . ($sale['id'] ?? 1);
-    $qr_svg = generate_document_qr_svg($sale_code . '|' . $total_price . '|' . $sold_at, 90);
+    $qr_svg = generate_document_qr_svg($sale_code . '|' . $total_price . '|' . $sold_at, 85);
 
     ob_start();
     ?>
     <div class="dw-pos-doc-wrapper dw-doc-mode-<?php echo htmlspecialchars($doc_type); ?>">
         
-        <!-- HEADER SECTION -->
-        <div class="dw-doc-header text-center text-md-start pb-3 mb-3 border-bottom border-2 border-dark">
-            <div class="row align-items-center">
-                <div class="col-md-7">
-                    <div class="d-inline-flex align-items-center gap-2 mb-1">
-                        <i class="bi <?php echo htmlspecialchars($biz['logo_icon']); ?> text-success fs-3"></i>
-                        <h3 class="fw-bold mb-0 text-dark" style="font-size: 1.2rem;"><?php echo htmlspecialchars($biz['name']); ?></h3>
-                    </div>
-                    <div class="small text-muted fw-semibold mb-1"><?php echo htmlspecialchars($biz['tagline']); ?></div>
-                    <div class="small text-secondary" style="font-size: 0.75rem;">
-                        <?php echo htmlspecialchars($biz['address_line1']); ?><?php echo !empty($biz['address_line2']) ? ', ' . htmlspecialchars($biz['address_line2']) : ''; ?><br>
-                        Tel: <?php echo htmlspecialchars($biz['phone']); ?> | Email: <?php echo htmlspecialchars($biz['email']); ?>
-                    </div>
-                    <!-- Country Specific Configurable Registration IDs -->
-                    <div class="mt-1 font-monospace text-muted" style="font-size: 0.7rem;">
+        <!-- 1. BUSINESS HEADER -->
+        <div class="dw-doc-header text-center pb-2 mb-2 border-bottom border-dark border-opacity-50">
+            <div class="d-inline-flex align-items-center justify-content-center gap-1.5 mb-0.5">
+                <i class="bi <?php echo htmlspecialchars($biz['logo_icon']); ?> text-success fs-5"></i>
+                <span class="dw-doc-biz-name text-dark"><?php echo htmlspecialchars($biz['name']); ?></span>
+            </div>
+            <div class="dw-doc-biz-sub text-muted fw-semibold mb-1">
+                Enterprise Medical &amp;<br>Business Continuity Center
+            </div>
+            <div class="dw-doc-biz-contact text-secondary">
+                <?php echo htmlspecialchars($biz['address_line1']); ?><?php echo !empty($biz['address_line2']) ? ', ' . htmlspecialchars($biz['address_line2']) : ''; ?><br>
+                Tel: <?php echo htmlspecialchars($biz['phone']); ?><br>
+                Email: <?php echo htmlspecialchars($biz['email']); ?>
+                <?php if (!empty($biz['tax_id_val_1']) || !empty($biz['tax_id_val_2'])): ?>
+                    <div class="font-monospace text-muted mt-0.5" style="font-size: 0.9em;">
                         <?php if (!empty($biz['tax_id_label_1']) && !empty($biz['tax_id_val_1'])): ?>
-                            <span class="me-2"><strong><?php echo htmlspecialchars($biz['tax_id_label_1']); ?>:</strong> <?php echo htmlspecialchars($biz['tax_id_val_1']); ?></span>
+                            <span class="me-1"><strong><?php echo htmlspecialchars($biz['tax_id_label_1']); ?>:</strong> <?php echo htmlspecialchars($biz['tax_id_val_1']); ?></span>
                         <?php endif; ?>
                         <?php if (!empty($biz['tax_id_label_2']) && !empty($biz['tax_id_val_2'])): ?>
                             <span><strong><?php echo htmlspecialchars($biz['tax_id_label_2']); ?>:</strong> <?php echo htmlspecialchars($biz['tax_id_val_2']); ?></span>
                         <?php endif; ?>
                     </div>
-                </div>
-                
-                <div class="col-md-5 text-center text-md-end mt-2 mt-md-0">
-                    <?php if ($doc_type === 'invoice'): ?>
-                        <h4 class="fw-extrabold text-uppercase text-dark mb-1" style="letter-spacing: 0.04em;">OFFICIAL TAX INVOICE</h4>
-                        <span class="badge bg-success font-monospace px-2.5 py-1" style="font-size: 0.75rem;">ORIGINAL COPY</span>
-                    <?php elseif ($doc_type === 'challan'): ?>
-                        <h4 class="fw-extrabold text-uppercase text-dark mb-1" style="letter-spacing: 0.04em;">DELIVERY CHALLAN</h4>
-                        <span class="badge bg-dark font-monospace px-2.5 py-1" style="font-size: 0.75rem;">GATE CLEARANCE PASS</span>
-                    <?php elseif ($doc_type === 'mobile'): ?>
-                        <h5 class="fw-bold text-uppercase text-dark mb-1">DIGITAL SALES RECEIPT</h5>
-                        <span class="badge bg-teal text-white font-monospace px-2 py-1" style="background-color:#0f766e; font-size: 0.75rem;">VERIFIED TRANSACTION</span>
-                    <?php else: ?>
-                        <h5 class="fw-bold text-uppercase text-dark mb-1">POS TRANSACTION RECEIPT</h5>
-                        <span class="badge bg-secondary font-monospace px-2 py-1" style="font-size: 0.7rem;">CUSTOMER COPY</span>
-                    <?php endif; ?>
-                    <div class="font-monospace text-muted mt-1" style="font-size: 0.7rem;">Ref Code: <?php echo htmlspecialchars($sale_code); ?></div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
 
-        <!-- TRANSACTION METADATA GRID -->
-        <div class="row g-2 mb-3 small" style="font-size: 0.8rem;">
-            <!-- Customer Information Card -->
-            <div class="<?php echo ($doc_type === 'receipt') ? 'col-12' : 'col-md-6'; ?>">
-                <div class="p-2.5 bg-light rounded border h-100">
-                    <span class="text-muted d-block fw-bold small text-uppercase mb-1" style="font-size: 0.68rem;">Customer / Billed To:</span>
-                    <strong class="text-dark d-block" style="font-size: 0.88rem;"><?php echo htmlspecialchars($customer_name); ?></strong>
-                    <?php if (!empty($customer_phone)): ?>
-                        <span class="d-block text-muted font-monospace" style="font-size: 0.75rem;"><i class="bi bi-telephone me-1"></i> <?php echo htmlspecialchars($customer_phone); ?></span>
-                    <?php endif; ?>
-                    <?php if (!empty($customer_email)): ?>
-                        <span class="d-block text-muted" style="font-size: 0.75rem;"><i class="bi bi-envelope me-1"></i> <?php echo htmlspecialchars($customer_email); ?></span>
-                    <?php endif; ?>
-                    <?php if (!empty($customer_address)): ?>
-                        <span class="d-block text-muted" style="font-size: 0.75rem;"><i class="bi bi-geo-alt me-1"></i> <?php echo htmlspecialchars($customer_address); ?></span>
-                    <?php endif; ?>
-                    <?php if (!empty($customer_tax_id)): ?>
-                        <span class="d-block font-monospace text-dark fw-semibold mt-1" style="font-size: 0.72rem;">Customer Tax/VAT ID: <?php echo htmlspecialchars($customer_tax_id); ?></span>
-                    <?php endif; ?>
-                </div>
-            </div>
+        <!-- 2. DOCUMENT TITLE & COPY TYPE -->
+        <div class="dw-doc-title-block text-center py-1 mb-2 border-bottom border-secondary border-opacity-25">
+            <?php if ($doc_type === 'invoice'): ?>
+                <div class="dw-doc-title text-dark">OFFICIAL TAX INVOICE</div>
+                <span class="badge bg-success text-white font-monospace my-0.5 px-1.5 py-0.5" style="font-size: 0.65em;">ORIGINAL COPY</span>
+            <?php elseif ($doc_type === 'challan'): ?>
+                <div class="dw-doc-title text-dark">DELIVERY CHALLAN</div>
+                <span class="badge bg-dark text-white font-monospace my-0.5 px-1.5 py-0.5" style="font-size: 0.65em;">GATE CLEARANCE PASS</span>
+            <?php elseif ($doc_type === 'mobile'): ?>
+                <div class="dw-doc-title text-dark">DIGITAL SALES RECEIPT</div>
+                <span class="badge bg-dark text-white font-monospace my-0.5 px-1.5 py-0.5" style="font-size: 0.65em;">VERIFIED TRANSACTION</span>
+            <?php else: ?>
+                <div class="dw-doc-title text-dark">POS TRANSACTION RECEIPT</div>
+                <span class="badge bg-secondary text-white font-monospace my-0.5 px-1.5 py-0.5" style="font-size: 0.65em;">CUSTOMER COPY</span>
+            <?php endif; ?>
+            <div class="font-monospace text-muted mt-0.5" style="font-size: 0.85em;">Ref Code: <?php echo htmlspecialchars($sale_code); ?></div>
+        </div>
 
-            <!-- Transaction Details Card -->
-            <div class="<?php echo ($doc_type === 'receipt') ? 'col-12' : 'col-md-6'; ?>">
-                <div class="p-2.5 bg-light rounded border h-100">
-                    <div class="d-flex justify-content-between mb-1">
-                        <span class="text-muted">Document No:</span>
-                        <strong class="font-monospace text-dark"><?php echo htmlspecialchars($sale_code); ?></strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-1">
-                        <span class="text-muted">Date &amp; Time:</span>
-                        <strong class="text-dark"><?php echo htmlspecialchars($sold_at); ?></strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-1">
-                        <span class="text-muted">Terminal / Register:</span>
-                        <strong class="font-monospace text-dark"><?php echo htmlspecialchars($terminal_id); ?></strong>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">Cashier / Staff:</span>
-                        <strong class="text-dark"><?php echo htmlspecialchars($cashier_name); ?></strong>
-                    </div>
-                </div>
+        <!-- 3. CUSTOMER / BILLED TO -->
+        <div class="dw-doc-customer py-1 mb-2 border-bottom border-secondary border-opacity-25">
+            <div class="dw-doc-section-title text-muted mb-0.5">CUSTOMER / BILLED TO</div>
+            <div class="fw-bold text-dark" style="font-size: 1.05em;"><?php echo htmlspecialchars($customer_name); ?></div>
+            <?php if (!empty($customer_phone)): ?>
+                <div class="text-muted font-monospace" style="font-size: 0.9em;"><i class="bi bi-telephone me-1"></i><?php echo htmlspecialchars($customer_phone); ?></div>
+            <?php endif; ?>
+            <?php if (!empty($customer_email)): ?>
+                <div class="text-muted" style="font-size: 0.9em;"><i class="bi bi-envelope me-1"></i><?php echo htmlspecialchars($customer_email); ?></div>
+            <?php endif; ?>
+            <?php if (!empty($customer_address)): ?>
+                <div class="text-muted" style="font-size: 0.9em;"><i class="bi bi-geo-alt me-1"></i><?php echo htmlspecialchars($customer_address); ?></div>
+            <?php endif; ?>
+            <?php if (!empty($customer_tax_id)): ?>
+                <div class="font-monospace text-dark fw-semibold mt-0.5" style="font-size: 0.85em;">Tax/VAT ID: <?php echo htmlspecialchars($customer_tax_id); ?></div>
+            <?php endif; ?>
+        </div>
+
+        <!-- 4. TRANSACTION INFORMATION -->
+        <div class="dw-doc-meta py-1 mb-2 border-bottom border-secondary border-opacity-25">
+            <div class="d-flex justify-content-between mb-0.5">
+                <span class="text-muted">Document No.</span>
+                <strong class="font-monospace text-dark"><?php echo htmlspecialchars($sale_code); ?></strong>
+            </div>
+            <div class="d-flex justify-content-between mb-0.5">
+                <span class="text-muted">Date &amp; Time</span>
+                <strong class="text-dark"><?php echo htmlspecialchars($sold_at); ?></strong>
+            </div>
+            <div class="d-flex justify-content-between mb-0.5">
+                <span class="text-muted">Terminal / Register</span>
+                <strong class="font-monospace text-dark"><?php echo htmlspecialchars($terminal_id); ?></strong>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="text-muted">Cashier / Staff</span>
+                <strong class="text-dark"><?php echo htmlspecialchars($cashier_name); ?></strong>
             </div>
         </div>
 
-        <!-- LINE ITEMS TABLE -->
-        <div class="table-responsive my-3">
-            <table class="table table-bordered table-sm align-middle mb-0" style="table-layout: fixed; width: 100%;">
-                <thead class="table-dark text-uppercase small" style="font-size: 0.72rem;">
-                    <tr>
-                        <th class="text-center" style="width: 7%;">#</th>
-                        <th style="width: 43%;">Item Description &amp; SKU</th>
-                        <th class="text-center" style="width: 12%;">Qty</th>
-                        <th class="text-end" style="width: 18%;">Unit Price</th>
-                        <th class="text-end" style="width: 20%;">Total Amount</th>
+        <!-- 5. ITEMS SECTION -->
+        <div class="dw-doc-items my-2">
+            <table class="dw-doc-table">
+                <thead>
+                    <tr class="border-bottom border-dark border-2 text-uppercase" style="font-size: 0.9em;">
+                        <th class="text-start pb-1" style="width: 44%;">ITEM</th>
+                        <th class="text-center pb-1" style="width: 12%;">QTY</th>
+                        <th class="text-end pb-1" style="width: 22%;">PRICE</th>
+                        <th class="text-end pb-1" style="width: 22%;">TOTAL</th>
                     </tr>
                 </thead>
-                <tbody class="small" style="font-size: 0.8rem;">
-                    <?php $sno = 1; foreach ($items as $it): 
+                <tbody>
+                    <?php foreach ($items as $it): 
                         $qty = (float)($it['quantity'] ?? 1);
                         $u_price = (float)($it['unit_price'] ?? 0);
                         $line_total = (float)($it['total_price'] ?? ($qty * $u_price));
                     ?>
-                        <tr>
-                            <td class="text-center font-monospace text-muted" style="font-size: 0.72rem;"><?php echo $sno++; ?></td>
-                            <td style="word-break: break-word;">
-                                <strong class="text-dark d-block" style="font-weight: 600;"><?php echo htmlspecialchars($it['product_name']); ?></strong>
+                        <tr class="border-bottom border-secondary border-opacity-15">
+                            <td class="text-start py-1.5" style="word-break: break-word;">
+                                <strong class="text-dark d-block"><?php echo htmlspecialchars($it['product_name']); ?></strong>
                                 <?php if (!empty($it['product_sku'])): ?>
-                                    <span class="text-muted font-monospace" style="font-size: 0.68rem;">SKU: <?php echo htmlspecialchars($it['product_sku']); ?></span>
+                                    <span class="text-muted font-monospace" style="font-size: 0.85em;">SKU: <?php echo htmlspecialchars($it['product_sku']); ?></span>
                                 <?php endif; ?>
                             </td>
-                            <td class="text-center fw-semibold text-dark"><?php echo number_format($qty); ?></td>
-                            <td class="text-end font-monospace text-muted"><?php echo format_currency($u_price, $currency_symbol); ?></td>
-                            <td class="text-end fw-semibold font-monospace text-dark"><?php echo format_currency($line_total, $currency_symbol); ?></td>
+                            <td class="text-center py-1.5 fw-bold text-dark"><?php echo number_format($qty); ?></td>
+                            <td class="text-end py-1.5 font-monospace text-muted"><?php echo format_currency($u_price, $currency_symbol); ?></td>
+                            <td class="text-end py-1.5 font-monospace fw-bold text-dark"><?php echo format_currency($line_total, $currency_symbol); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -216,117 +204,120 @@ function render_pos_document($sale, $items, $doc_type = 'receipt', $custom_biz =
         </div>
 
         <?php if ($doc_type !== 'challan'): ?>
-            <!-- FINANCIAL SUMMARY TOTALS & PAYMENT GRID -->
-            <div class="row g-2 mb-3 small" style="font-size: 0.8rem;">
-                <!-- Payment Info Box -->
-                <div class="col-md-6">
-                    <div class="p-3 border rounded bg-white h-100">
-                        <span class="fw-bold text-dark d-block small text-uppercase mb-2" style="font-size: 0.7rem;"><i class="bi bi-wallet2 me-1 text-success"></i> Payment Settlement:</span>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Payment Method:</span>
-                            <strong class="text-dark text-uppercase"><?php echo htmlspecialchars(str_replace('_', ' ', $sale['payment_method'] ?? 'CASH')); ?></strong>
-                        </div>
-                        <?php if (!empty($sale['payment_ref'])): ?>
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-muted">Ref / Trans No:</span>
-                                <span class="font-monospace text-dark"><?php echo htmlspecialchars($sale['payment_ref']); ?></span>
-                            </div>
-                        <?php endif; ?>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Amount Received:</span>
-                            <strong class="text-success font-monospace"><?php echo format_currency($amount_received, $currency_symbol); ?></strong>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Change Returned:</span>
-                            <strong class="text-primary font-monospace"><?php echo format_currency($change_amount, $currency_symbol); ?></strong>
-                        </div>
-                        <div class="pt-2 mt-2 border-top d-flex justify-content-between align-items-center">
-                            <span class="text-muted">Settlement Status:</span>
-                            <span class="badge bg-success text-uppercase" style="font-size: 0.68rem;"><?php echo htmlspecialchars(strtoupper($sale['payment_status'] ?? 'PAID')); ?></span>
-                        </div>
-                    </div>
+            <!-- 6. TOTALS SECTION -->
+            <div class="dw-doc-totals py-1.5 my-2 border-top border-bottom border-secondary border-opacity-25">
+                <div class="d-flex justify-content-between mb-0.5">
+                    <span class="text-muted">Subtotal</span>
+                    <span class="font-monospace text-dark fw-semibold"><?php echo format_currency($subtotal, $currency_symbol); ?></span>
                 </div>
-
-                <!-- Financial Totals Box -->
-                <div class="col-md-6">
-                    <div class="p-3 border rounded bg-light">
-                        <div class="d-flex justify-content-between mb-1 text-muted">
-                            <span>Subtotal Amount:</span>
-                            <strong class="font-monospace text-dark"><?php echo format_currency($subtotal, $currency_symbol); ?></strong>
-                        </div>
-                        <?php if ($discount_amount > 0): ?>
-                            <div class="d-flex justify-content-between mb-1 text-danger">
-                                <span>Discount Allowed:</span>
-                                <strong class="font-monospace">- <?php echo format_currency($discount_amount, $currency_symbol); ?></strong>
-                            </div>
-                        <?php endif; ?>
-                        <div class="d-flex justify-content-between mb-2 text-muted">
-                            <span><?php echo htmlspecialchars($tax_label); ?> (<?php echo (float)($biz['tax_rate_percent'] ?? 0); ?>%):</span>
-                            <strong class="font-monospace">+ <?php echo format_currency($tax_amount, $currency_symbol); ?></strong>
-                        </div>
-                        
-                        <!-- Prominent Grand Total -->
-                        <div class="p-2.5 bg-dark text-white rounded d-flex justify-content-between align-items-center mt-2 shadow-sm">
-                            <span class="fw-bold text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.03em;">GRAND TOTAL:</span>
-                            <strong class="fw-bold text-teal font-monospace" style="color: #2dd4bf; font-size: 1.15rem;"><?php echo format_currency($total_price, $currency_symbol); ?></strong>
-                        </div>
+                <?php if ($discount_amount > 0): ?>
+                    <div class="d-flex justify-content-between mb-0.5 text-danger">
+                        <span>Discount Allowed</span>
+                        <span class="font-monospace">- <?php echo format_currency($discount_amount, $currency_symbol); ?></span>
                     </div>
+                <?php endif; ?>
+                <div class="d-flex justify-content-between mb-1 text-muted">
+                    <span><?php echo htmlspecialchars($tax_label); ?> (<?php echo (float)($biz['tax_rate_percent'] ?? 0); ?>%)</span>
+                    <span class="font-monospace">+ <?php echo format_currency($tax_amount, $currency_symbol); ?></span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center pt-1.5 mt-1 border-top border-dark border-2">
+                    <span class="fw-bold text-dark text-uppercase" style="letter-spacing: 0.02em;">GRAND TOTAL</span>
+                    <strong class="font-monospace text-dark dw-doc-grand-total"><?php echo format_currency($total_price, $currency_symbol); ?></strong>
+                </div>
+            </div>
+
+            <!-- 7. PAYMENT SETTLEMENT -->
+            <div class="dw-doc-payment py-1.5 my-2 border-bottom border-secondary border-opacity-25">
+                <div class="dw-doc-section-title text-muted mb-1">PAYMENT SETTLEMENT</div>
+                <div class="d-flex justify-content-between mb-0.5">
+                    <span class="text-muted">Payment Method</span>
+                    <strong class="text-dark text-uppercase"><?php echo htmlspecialchars(str_replace('_', ' ', $sale['payment_method'] ?? 'CASH')); ?></strong>
+                </div>
+                <?php if (!empty($sale['payment_ref'])): ?>
+                    <div class="d-flex justify-content-between mb-0.5">
+                        <span class="text-muted">Ref / Trans No.</span>
+                        <span class="font-monospace text-dark"><?php echo htmlspecialchars($sale['payment_ref']); ?></span>
+                    </div>
+                <?php endif; ?>
+                <div class="d-flex justify-content-between mb-0.5">
+                    <span class="text-muted">Amount Received</span>
+                    <strong class="text-success font-monospace"><?php echo format_currency($amount_received, $currency_symbol); ?></strong>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Change Returned</span>
+                    <strong class="text-primary font-monospace"><?php echo format_currency($change_amount, $currency_symbol); ?></strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center pt-1 border-top border-secondary border-opacity-10">
+                    <span class="text-muted">Settlement Status</span>
+                    <span class="badge bg-success text-white font-monospace text-uppercase" style="font-size: 0.7em; padding: 2px 6px;"><?php echo htmlspecialchars(strtoupper($sale['payment_status'] ?? 'PAID')); ?></span>
                 </div>
             </div>
         <?php else: ?>
             <!-- Delivery Verification Clearance Note for Challan -->
-            <div class="p-3 bg-light border rounded mb-3 small" style="font-size: 0.78rem;">
-                <strong class="text-dark d-block mb-1"><i class="bi bi-shield-check me-1 text-success"></i> Goods Dispatch &amp; Gate Verification:</strong>
-                All listed items have been physically inspected, counted, and cleared for dispatch in full operational order. Receiver assumes responsibility upon gate exit.
+            <div class="p-2 bg-light border rounded my-2" style="font-size: 0.9em;">
+                <strong class="text-dark d-block mb-0.5"><i class="bi bi-shield-check me-1 text-success"></i> Goods Dispatch &amp; Gate Clearance:</strong>
+                All items physically verified and cleared for dispatch in full operational condition.
             </div>
         <?php endif; ?>
 
-        <!-- FOOTER SECTION (TERMS, QR CODE & SIGNATURES) -->
-        <div class="dw-doc-footer pt-3 border-top mt-3">
-            <div class="row align-items-center">
-                <div class="col-8">
-                    <?php if (!empty($biz['footer_return_policy'])): ?>
-                        <p class="small text-muted mb-1" style="font-size: 0.72rem;"><strong>Return Policy:</strong> <?php echo htmlspecialchars($biz['footer_return_policy']); ?></p>
-                    <?php endif; ?>
-                    <?php if (!empty($biz['footer_warranty_info'])): ?>
-                        <p class="small text-muted mb-1" style="font-size: 0.72rem;"><strong>Warranty:</strong> <?php echo htmlspecialchars($biz['footer_warranty_info']); ?></p>
-                    <?php endif; ?>
-                    <p class="small text-muted mb-0" style="font-size: 0.72rem;"><?php echo htmlspecialchars($biz['footer_support_contact']); ?></p>
+        <!-- 8. QR CODE & FOOTER POLICY SECTION -->
+        <div class="dw-doc-footer text-center pt-1 mt-2">
+            <?php if (!empty($biz['enable_qr_code'])): ?>
+                <div class="my-2">
+                    <div class="d-inline-block bg-white p-1 border rounded">
+                        <?php echo $qr_svg; ?>
+                    </div>
+                    <div class="text-muted font-monospace fw-semibold mt-0.5" style="font-size: 0.85em;">Scan to Verify</div>
                 </div>
-                
-                <?php if (!empty($biz['enable_qr_code'])): ?>
-                    <div class="col-4 text-end">
-                        <div class="d-inline-block text-center">
-                            <?php echo $qr_svg; ?>
-                            <span class="d-block text-muted font-monospace mt-1" style="font-size: 0.6rem;">Scan to Verify</span>
-                        </div>
+            <?php endif; ?>
+
+            <div class="text-start text-secondary my-2 pt-1 border-top border-secondary border-opacity-10" style="font-size: 0.85em;">
+                <?php if (!empty($biz['footer_return_policy'])): ?>
+                    <div class="mb-1">
+                        <strong class="text-dark d-block">Return Policy:</strong>
+                        <span><?php echo htmlspecialchars($biz['footer_return_policy']); ?></span>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($biz['footer_warranty_info'])): ?>
+                    <div class="mb-1">
+                        <strong class="text-dark d-block">Warranty:</strong>
+                        <span><?php echo htmlspecialchars($biz['footer_warranty_info']); ?></span>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($biz['footer_support_contact'])): ?>
+                    <div class="mb-1">
+                        <strong class="text-dark d-block">Customer Support:</strong>
+                        <span><?php echo htmlspecialchars($biz['footer_support_contact']); ?></span>
                     </div>
                 <?php endif; ?>
             </div>
 
             <?php if ($doc_type === 'invoice' || $doc_type === 'challan'): ?>
-                <!-- Signature Blocks for Official Office Documents -->
-                <div class="row pt-4 text-center mt-3 print-avoid-break">
-                    <div class="col-4">
-                        <div class="border-top border-dark border-2 pt-1 mx-2">
-                            <span class="small text-dark fw-semibold" style="font-size: 0.72rem;">Issued By (Cashier)</span>
+                <!-- Official Signatures for Office Documents -->
+                <div class="d-flex justify-content-between text-center pt-3 mt-2 border-top border-secondary border-opacity-15">
+                    <div class="flex-grow-1 mx-1">
+                        <div class="border-top border-dark border-2 pt-0.5">
+                            <span class="text-dark fw-semibold" style="font-size: 0.8em;">Issued By</span>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <div class="border-top border-dark border-2 pt-1 mx-2">
-                            <span class="small text-dark fw-semibold" style="font-size: 0.72rem;">Gate Security Stamp</span>
+                    <div class="flex-grow-1 mx-1">
+                        <div class="border-top border-dark border-2 pt-0.5">
+                            <span class="text-dark fw-semibold" style="font-size: 0.8em;">Gate Stamp</span>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <div class="border-top border-dark border-2 pt-1 mx-2">
-                            <span class="small text-dark fw-semibold" style="font-size: 0.72rem;">Receiver Signature</span>
+                    <div class="flex-grow-1 mx-1">
+                        <div class="border-top border-dark border-2 pt-0.5">
+                            <span class="text-dark fw-semibold" style="font-size: 0.8em;">Receiver</span>
                         </div>
                     </div>
                 </div>
             <?php endif; ?>
 
-            <div class="text-center mt-3 pt-2 border-top text-muted small" style="font-size: 0.68rem;">
-                <?php echo htmlspecialchars($biz['footer_thank_you']); ?> &bull; Dawaam Local Business Continuity Software
+            <div class="text-center text-muted pt-2 border-top border-secondary border-opacity-25" style="font-size: 0.8em;">
+                <?php echo htmlspecialchars($biz['footer_thank_you']); ?><br>
+                <span class="font-monospace" style="font-size: 0.9em;">Dawaam Local Business Continuity Software</span>
             </div>
         </div>
     </div>

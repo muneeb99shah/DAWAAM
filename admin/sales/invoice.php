@@ -1,7 +1,7 @@
 <?php
 /**
  * Dawaam - Local Business Continuity Software
- * Admin - Official Tax Invoice Printable Document Module (A4 / A5 Office Printers)
+ * Admin - Official Tax Invoice Printable Document Module (A4 / A5 / Thermal)
  */
 
 require_once __DIR__ . '/../../config/app.php';
@@ -72,18 +72,21 @@ require_once __DIR__ . '/../../includes/header.php';
         size: A4 portrait;
         margin: 12mm 15mm;
     }
-    .dw-navbar, .dw-footer, .no-print, header, nav, footer {
-        display: none !important;
-    }
-    body {
+    html, body {
         background-color: #ffffff !important;
         color: #000000 !important;
-        font-family: var(--dw-font-sans) !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
-    .invoice-box {
+    .dw-navbar, .dw-footer, .no-print, header, nav, footer, .dw-sidebar-outer-wrap, #dwMobileNavDrawer, .dw-mobile-bottom-bar {
+        display: none !important;
+    }
+    .dw-doc-card-container {
         box-shadow: none !important;
         border: none !important;
+        border-radius: 0 !important;
         padding: 0 !important;
+        margin: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
     }
@@ -91,21 +94,27 @@ require_once __DIR__ . '/../../includes/header.php';
 </style>
 
 <div class="row justify-content-center mb-5">
-    <div class="col-md-10 col-lg-9">
+    <div class="col-12 col-xl-10">
         <!-- Action Toolbar & Printer Paper Size Selector -->
-        <div class="card border-0 shadow-sm p-3 mb-3 bg-white no-print">
+        <div class="card border-0 shadow-sm p-3 mb-4 bg-white no-print">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
                     <span class="fw-bold text-dark d-block mb-1">
-                        <i class="bi bi-file-earmark-text text-primary me-1"></i> Tax Invoice &amp; Paper Format
+                        <i class="bi bi-file-earmark-text text-primary me-1"></i> Tax Invoice Format &amp; Paper Size
                     </span>
                     <span class="small text-muted">Select office paper size:</span>
                     <div class="btn-group btn-group-sm ms-2" role="group" aria-label="Paper Format Selector">
                         <button type="button" class="btn btn-outline-primary active dw-inv-paper-btn" onclick="setInvoicePaperFormat('a4', this)">
-                            Standard A4 (210×297mm)
+                            Standard A4
                         </button>
                         <button type="button" class="btn btn-outline-primary dw-inv-paper-btn" onclick="setInvoicePaperFormat('a5', this)">
-                            Compact A5 (148×210mm)
+                            Compact A5
+                        </button>
+                        <button type="button" class="btn btn-outline-success dw-inv-paper-btn" onclick="setInvoicePaperFormat('80mm', this)">
+                            Thermal 80mm
+                        </button>
+                        <button type="button" class="btn btn-outline-success dw-inv-paper-btn" onclick="setInvoicePaperFormat('58mm', this)">
+                            Thermal 58mm
                         </button>
                     </div>
                 </div>
@@ -125,10 +134,8 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
 
         <!-- Official Tax Invoice Document Container -->
-        <div class="table-responsive bg-white rounded-3 shadow-sm border-0">
-            <div id="dw-invoice-container" class="dw-card p-4 p-md-5 bg-white invoice-box paper-format-a4">
-                <?php echo render_pos_document($sale, $items, 'invoice'); ?>
-            </div>
+        <div id="dw-invoice-container" class="dw-doc-card-container paper-format-a4">
+            <?php echo render_pos_document($sale, $items, 'invoice'); ?>
         </div>
     </div>
 </div>
@@ -138,14 +145,23 @@ function setInvoicePaperFormat(format, btn) {
     const container = document.getElementById('dw-invoice-container');
     const styleEl = document.getElementById('dw-invoice-print-style');
     
-    document.querySelectorAll('.dw-inv-paper-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    document.querySelectorAll('.dw-inv-paper-btn').forEach(b => b.classList.remove('active', 'btn-primary', 'btn-success'));
+    btn.classList.add('active', format.includes('mm') ? 'btn-success' : 'btn-primary');
 
-    container.classList.remove('paper-format-a4', 'paper-format-a5');
-    container.classList.add('paper-format-' + format);
+    container.className = 'dw-doc-card-container paper-format-' + format;
 
-    let pageCss = (format === 'a5') ? '@page { size: A5 portrait; margin: 8mm 10mm; }' : '@page { size: A4 portrait; margin: 12mm 15mm; }';
-    styleEl.innerHTML = `@media print { ${pageCss} .dw-navbar, .dw-footer, .no-print, header, nav, footer { display: none !important; } body { background-color: #ffffff !important; color: #000000 !important; } .invoice-box { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; } }`;
+    let pageCss = '';
+    if (format === '80mm') {
+        pageCss = '@page { size: 80mm auto; margin: 0; }';
+    } else if (format === '58mm') {
+        pageCss = '@page { size: 58mm auto; margin: 0; }';
+    } else if (format === 'a5') {
+        pageCss = '@page { size: A5 portrait; margin: 8mm 10mm; }';
+    } else {
+        pageCss = '@page { size: A4 portrait; margin: 12mm 15mm; }';
+    }
+
+    styleEl.innerHTML = `@media print { ${pageCss} html, body { background-color: #ffffff !important; color: #000000 !important; margin: 0 !important; padding: 0 !important; } .dw-navbar, .dw-footer, .no-print, header, nav, footer, .dw-sidebar-outer-wrap, #dwMobileNavDrawer, .dw-mobile-bottom-bar { display: none !important; } .dw-doc-card-container { box-shadow: none !important; border: none !important; border-radius: 0 !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; } }`;
 }
 </script>
 
