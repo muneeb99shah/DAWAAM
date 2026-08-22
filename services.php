@@ -1,7 +1,7 @@
 <?php
 /**
  * Dawaam - Local Business Continuity Software
- * Services Page - Dynamic Database Catalog
+ * Services Page - Dynamic & Offline-Resilient Service Catalog
  */
 
 require_once __DIR__ . '/config/app.php';
@@ -16,32 +16,99 @@ if (is_logged_in()) {
 $page_title = "Business Continuity Services Catalog";
 require_once __DIR__ . '/includes/header.php';
 
-// Fetch Categories and Services dynamically from MySQL via PDO
-$pdo = get_db_connection();
+// Predefined production fallbacks for zero-downtime offline presentation
+$default_service_categories = [
+    ['id' => 1, 'name' => 'Network Continuity Solutions'],
+    ['id' => 2, 'name' => 'Emergency Hardware & Messaging']
+];
 
-$stmt_cat = $pdo->query("SELECT id, name FROM service_categories ORDER BY id ASC");
-$service_categories = $stmt_cat->fetchAll();
+$default_services = [
+    [
+        'id' => 1,
+        'category_id' => 1,
+        'category_name' => 'Network Continuity Solutions',
+        'title' => 'Local Network Sync Setup',
+        'description' => 'Configures high-speed local LAN and Wi-Fi synchronization allowing multi-device POS and operational continuity without internet connectivity.',
+        'price' => 15000.00,
+        'image_path' => 'assets/images/service-lan.svg'
+    ],
+    [
+        'id' => 2,
+        'category_id' => 2,
+        'category_name' => 'Emergency Hardware & Messaging',
+        'title' => 'SMS Emergency Gateway Setup',
+        'description' => 'Integrates Android SMS Gateway equipment for critical event notifications directly over SIM cellular towers during internet blackouts.',
+        'price' => 12000.00,
+        'image_path' => 'assets/images/service-sms.svg'
+    ],
+    [
+        'id' => 3,
+        'category_id' => 1,
+        'category_name' => 'Network Continuity Solutions',
+        'title' => 'Cloud Data Mirroring & Recovery',
+        'description' => 'Provides automatic background record synchronization, conflict resolution, and central server backup when WAN access restores.',
+        'price' => 20000.00,
+        'image_path' => 'assets/images/service-cloud.svg'
+    ],
+    [
+        'id' => 4,
+        'category_id' => 1,
+        'category_name' => 'Network Continuity Solutions',
+        'title' => 'POS & Local Server Deployment',
+        'description' => 'Full local hardware installation of Dawaam server software, database engine, and user permission hierarchies.',
+        'price' => 25000.00,
+        'image_path' => 'assets/images/service-pos.svg'
+    ]
+];
 
 $selected_cat = isset($_GET['category']) ? (int)$_GET['category'] : 0;
+$service_categories = $default_service_categories;
+$services = $default_services;
+$db_error_occurred = false;
 
-if ($selected_cat > 0) {
-    $stmt_srv = $pdo->prepare("
-        SELECT s.id, s.title, s.description, s.price, s.image_path, sc.name AS category_name, s.category_id
-        FROM services s
-        INNER JOIN service_categories sc ON s.category_id = sc.id
-        WHERE s.category_id = :category_id
-        ORDER BY s.id ASC
-    ");
-    $stmt_srv->execute([':category_id' => $selected_cat]);
-} else {
-    $stmt_srv = $pdo->query("
-        SELECT s.id, s.title, s.description, s.price, s.image_path, sc.name AS category_name, s.category_id
-        FROM services s
-        INNER JOIN service_categories sc ON s.category_id = sc.id
-        ORDER BY s.id ASC
-    ");
+// Attempt database fetch if PDO connection is available
+try {
+    $pdo = get_db_connection();
+    if ($pdo) {
+        $stmt_cat = $pdo->query("SELECT id, name FROM service_categories ORDER BY id ASC");
+        $fetched_cats = $stmt_cat->fetchAll();
+        if (!empty($fetched_cats)) {
+            $service_categories = $fetched_cats;
+        }
+
+        if ($selected_cat > 0) {
+            $stmt_srv = $pdo->prepare("
+                SELECT s.id, s.title, s.description, s.price, s.image_path, sc.name AS category_name, s.category_id
+                FROM services s
+                INNER JOIN service_categories sc ON s.category_id = sc.id
+                WHERE s.category_id = :category_id
+                ORDER BY s.id ASC
+            ");
+            $stmt_srv->execute([':category_id' => $selected_cat]);
+        } else {
+            $stmt_srv = $pdo->query("
+                SELECT s.id, s.title, s.description, s.price, s.image_path, sc.name AS category_name, s.category_id
+                FROM services s
+                INNER JOIN service_categories sc ON s.category_id = sc.id
+                ORDER BY s.id ASC
+            ");
+        }
+        $fetched_srvs = $stmt_srv->fetchAll();
+        if (!empty($fetched_srvs)) {
+            $services = $fetched_srvs;
+        }
+    }
+} catch (Exception $e) {
+    error_log('Services Page DB Fetch Error: ' . $e->getMessage());
+    $db_error_occurred = true;
 }
-$services = $stmt_srv->fetchAll();
+
+// Filter fallback array if database connection was unavailable and category filter is selected
+if ((!isset($pdo) || !$pdo || $db_error_occurred) && $selected_cat > 0) {
+    $services = array_values(array_filter($default_services, function($s) use ($selected_cat) {
+        return (int)$s['category_id'] === $selected_cat;
+    }));
+}
 ?>
 
 <!-- Hero Banner -->
@@ -64,7 +131,7 @@ $services = $stmt_srv->fetchAll();
                     <div class="p-4 bg-dark bg-opacity-40 border border-light border-opacity-25 rounded-4 backdrop-blur">
                         <i class="bi bi-box-seam text-info display-1 d-block mb-2"></i>
                         <h5 class="fw-bold text-white mb-1">Local Installation Packages</h5>
-                        <p class="small text-white-50 mb-0">Loaded dynamically from MySQL</p>
+                        <p class="small text-white-50 mb-0">Enterprise Deployment Packages</p>
                     </div>
                 </div>
             </div>
@@ -92,19 +159,27 @@ $services = $stmt_srv->fetchAll();
 <!-- Dynamic Services Grid -->
 <div class="row g-4 mb-5">
     <?php if (count($services) > 0): ?>
-        <?php foreach ($services as $srv): ?>
+        <?php foreach ($services as $srv): 
+            $img_path = !empty($srv['image_path']) ? $srv['image_path'] : '';
+            if (!empty($img_path) && !file_exists(__DIR__ . '/' . $img_path)) {
+                $svg_path = preg_replace('/\.jpg$/i', '.svg', $img_path);
+                if (file_exists(__DIR__ . '/' . $svg_path)) {
+                    $img_path = $svg_path;
+                }
+            }
+        ?>
             <div class="col-md-6 col-lg-6">
                 <div class="dw-card h-100 d-flex flex-column overflow-hidden shadow-sm">
                     <!-- Service Image Container -->
-                    <div class="position-relative bg-dark text-center overflow-hidden" style="height: 220px;">
-                        <?php if (!empty($srv['image_path']) && file_exists(__DIR__ . '/' . $srv['image_path'])): ?>
-                            <img src="<?php echo BASE_URL . '/' . sanitize($srv['image_path']); ?>" alt="<?php echo sanitize($srv['title']); ?>" class="w-100 h-100" style="object-fit: cover; object-position: center;">
+                    <div class="position-relative text-center overflow-hidden" style="height: 210px; background-color: #0f172a;">
+                        <?php if (!empty($img_path) && file_exists(__DIR__ . '/' . $img_path)): ?>
+                            <img src="<?php echo BASE_URL . '/' . sanitize($img_path); ?>" alt="<?php echo sanitize($srv['title']); ?>" class="w-100 h-100" style="object-fit: cover; object-position: center;">
                         <?php else: ?>
-                            <div class="d-flex align-items-center justify-content-center h-100 bg-secondary bg-opacity-20 text-white-50">
-                                <i class="bi bi-hdd-network display-2"></i>
+                            <div class="d-flex align-items-center justify-content-center h-100 text-white-50">
+                                <i class="bi bi-hdd-network display-2 text-teal" style="color:#2dd4bf;"></i>
                             </div>
                         <?php endif; ?>
-                        <span class="position-absolute top-0 end-0 m-3 badge bg-teal px-3 py-2 fs-6 shadow fw-bold" style="background-color:#0f766e;">
+                        <span class="position-absolute top-0 end-0 m-3 badge bg-teal px-3 py-2 fs-6 shadow-sm fw-bold" style="background-color:#0f766e;">
                             <?php echo format_currency($srv['price']); ?>
                         </span>
                     </div>
@@ -135,10 +210,10 @@ $services = $stmt_srv->fetchAll();
         <?php endforeach; ?>
     <?php else: ?>
         <div class="col-12">
-            <div class="alert alert-info text-center p-5">
-                <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
-                <h5>No Services Found in Selected Category</h5>
-                <p class="mb-0">Please select another category or return to the main catalog.</p>
+            <div class="alert alert-info text-center p-5 rounded-4 shadow-sm">
+                <i class="bi bi-info-circle fs-1 d-block mb-3 text-teal" style="color:#0f766e;"></i>
+                <h5 class="fw-bold">No Services Found in Selected Category</h5>
+                <p class="mb-0 text-muted">Please select another category or return to the main catalog.</p>
             </div>
         </div>
     <?php endif; ?>

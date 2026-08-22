@@ -9,6 +9,9 @@ require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/alerts.php';
 
+// Enforce staff authentication for diagnostic & verification access
+require_login();
+
 $pdo = get_db_connection();
 
 $page_title = "Phase 1 System Health & Verification";

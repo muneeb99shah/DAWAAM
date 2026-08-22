@@ -109,7 +109,7 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="bi bi-hdd-rack text-teal fs-1 mb-2 d-block" style="color:#0f766e;"></i>
                         <h5 class="fw-bold text-dark">Local Database</h5>
                         <p class="small text-muted mb-0">
-                            All products, user permissions, stock levels, and sales transactions are stored in a high-speed local MySQL database on your local PC.
+                            All products, user permissions, stock levels, and sales transactions are stored in a high-speed local database on your local server.
                         </p>
                     </div>
                 </div>

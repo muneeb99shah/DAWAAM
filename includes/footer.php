@@ -17,8 +17,8 @@ $show_operational_layout = is_logged_in() && $is_admin_route;
 
 <footer class="dw-footer">
     <div class="container">
-        <div class="row gy-4">
-            <div class="col-lg-5 col-md-6">
+        <div class="row gy-4 align-items-start">
+            <div class="col-lg-6 col-md-6">
                 <h5 class="text-white fw-bold mb-3 d-flex align-items-center">
                     <i class="bi bi-shield-check text-success me-2 fs-4"></i> <?php echo APP_NAME; ?>
                 </h5>
@@ -31,32 +31,16 @@ $show_operational_layout = is_logged_in() && $is_admin_route;
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-6">
-                <h6 class="text-white fw-bold mb-3">System Architecture</h6>
+            <div class="col-lg-5 col-md-6 offset-lg-1">
+                <h6 class="text-white fw-bold mb-3 d-flex align-items-center">
+                    <i class="bi bi-cpu text-success me-2 fs-5"></i> System Architecture & Resilience
+                </h6>
                 <ul class="list-unstyled small mb-0">
-                    <li class="mb-2"><i class="bi bi-wifi text-success me-2"></i> Local LAN / Wi-Fi Grid</li>
-                    <li class="mb-2"><i class="bi bi-phone-vibrate text-warning me-2"></i> Android SMS Emergency Gateway</li>
-                    <li class="mb-2"><i class="bi bi-cloud-arrow-up text-info me-2"></i> WAN Recovery Sync Engine</li>
-                    <li class="mb-2"><i class="bi bi-shield-lock text-primary me-2"></i> PDO Prepared Statements & RBAC</li>
+                    <li class="mb-2.5 d-flex align-items-center"><i class="bi bi-wifi text-success me-2 fs-6"></i> <span>Local LAN &amp; Wi-Fi Grid Network</span></li>
+                    <li class="mb-2.5 d-flex align-items-center"><i class="bi bi-phone-vibrate text-warning me-2 fs-6"></i> <span>Android SMS Emergency Gateway</span></li>
+                    <li class="mb-2.5 d-flex align-items-center"><i class="bi bi-cloud-arrow-up text-info me-2 fs-6"></i> <span>WAN Recovery Sync Engine</span></li>
+                    <li class="mb-2.5 d-flex align-items-center"><i class="bi bi-shield-lock text-primary me-2 fs-6"></i> <span>Enterprise Security &amp; Access Controls</span></li>
                 </ul>
-            </div>
-
-            <div class="col-lg-4 col-md-12">
-                <h6 class="text-white fw-bold mb-3">Local Server Health Status</h6>
-                <div class="dw-footer-box">
-                    <div class="status-row">
-                        <span class="text-white-50 small">Local Server IP:</span>
-                        <span class="text-white font-monospace fw-bold"><?php echo SERVER_LAN_IP; ?></span>
-                    </div>
-                    <div class="status-row">
-                        <span class="text-white-50 small">HTTP Port:</span>
-                        <span class="text-white font-monospace fw-bold">8000</span>
-                    </div>
-                    <div class="status-row">
-                        <span class="text-white-50 small">Database Engine:</span>
-                        <span class="text-success font-monospace fw-bold">MySQL (dawaam_db)</span>
-                    </div>
-                </div>
             </div>
         </div>
 

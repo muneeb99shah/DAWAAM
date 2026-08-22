@@ -135,6 +135,7 @@ function json_response($status, $message = '', $data = [], $http_code = 200) {
 function log_audit_action($action, $module, $record_id = null, $description = null, $user_id = null) {
     try {
         $pdo = get_db_connection();
+        if (!$pdo) return;
         if ($user_id === null && isset($_SESSION['user_id'])) {
             $user_id = $_SESSION['user_id'];
         }
@@ -163,6 +164,7 @@ function log_audit_action($action, $module, $record_id = null, $description = nu
 function queue_sync_record($table_name, $record_id, $action) {
     try {
         $pdo = get_db_connection();
+        if (!$pdo) return;
         $stmt = $pdo->prepare("
             INSERT INTO sync_log (table_name, record_id, action, synced, sync_status)
             VALUES (:table_name, :record_id, :action, 0, 'pending')

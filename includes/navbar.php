@@ -62,11 +62,13 @@ $brand_target = $user ? (BASE_URL . '/admin/index.php') : (BASE_URL . '/index.ph
             </ul>
 
             <div class="d-flex flex-column flex-xl-row align-items-start align-items-xl-center gap-2 gap-xl-3 pt-3 pt-xl-0 border-top border-xl-0 border-secondary border-opacity-25">
-                <!-- Local LAN Server IP Badge (Text-Only) -->
-                <div class="dw-lan-server-badge text-nowrap">
-                    <span class="text-white-50">LAN Server:</span>
-                    <strong class="text-white font-monospace ms-1"><?php echo SERVER_LAN_IP; ?>:8000</strong>
-                </div>
+                <?php if ($user): ?>
+                    <!-- Local LAN Server IP Badge (Text-Only for authenticated staff) -->
+                    <div class="dw-lan-server-badge text-nowrap">
+                        <span class="text-white-50">LAN Server:</span>
+                        <strong class="text-white font-monospace ms-1"><?php echo SERVER_LAN_IP; ?>:8000</strong>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Network Status Badge -->
                 <div id="dw-network-status" class="dw-badge-lan text-nowrap">

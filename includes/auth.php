@@ -26,6 +26,9 @@ function current_user($force_refresh = false) {
 
     if ($force_refresh || $user_cache === null || $user_cache['id'] != $_SESSION['user_id']) {
         $pdo = get_db_connection();
+        if (!$pdo) {
+            return null;
+        }
         $stmt = $pdo->prepare("
             SELECT id, user_code, name, username, email, status, created_at
             FROM users
@@ -173,6 +176,12 @@ function require_permission($permission_key) {
  */
 function login_user($username, $password) {
     $pdo = get_db_connection();
+    if (!$pdo) {
+        return [
+            'success' => false,
+            'message' => 'Unable to process login at the moment. Please try again shortly.'
+        ];
+    }
     
     $stmt = $pdo->prepare("
         SELECT id, username, password_hash, status, name
@@ -219,7 +228,7 @@ function login_user($username, $password) {
  * Logout User
  */
 function logout_user() {
-    if (is_logged_in()) {
+    if (session_status() === PHP_SESSION_ACTIVE && is_logged_in()) {
         log_audit_action('USER_LOGOUT', 'users', $_SESSION['user_id'], "User logged out");
     }
     $_SESSION = [];
@@ -230,7 +239,9 @@ function logout_user() {
             $params["secure"], $params["httponly"]
         );
     }
-    session_destroy();
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
+    }
 }
 
 /**
@@ -238,6 +249,7 @@ function logout_user() {
  */
 function generate_next_user_code() {
     $pdo = get_db_connection();
+    if (!$pdo) return 'DW-0001';
     $max_id = $pdo->query("SELECT MAX(id) FROM users")->fetchColumn();
     $next_num = ($max_id ? (int)$max_id : 0) + 1;
     return 'DW-' . str_pad($next_num, 4, '0', STR_PAD_LEFT);
@@ -248,6 +260,7 @@ function generate_next_user_code() {
  */
 function get_all_roles() {
     $pdo = get_db_connection();
+    if (!$pdo) return [];
     return $pdo->query("SELECT id, name, slug, description FROM roles ORDER BY id ASC")->fetchAll();
 }
 
@@ -256,6 +269,7 @@ function get_all_roles() {
  */
 function get_user_permission_keys($user_id) {
     $pdo = get_db_connection();
+    if (!$pdo) return [];
     
     // Fetch roles
     $stmt_roles = $pdo->prepare("SELECT r.slug FROM roles r INNER JOIN user_roles ur ON r.id = ur.role_id WHERE ur.user_id = :uid");
@@ -315,6 +329,7 @@ function get_user_permission_keys($user_id) {
  */
 function get_user_effective_permissions_matrix($target_user_id) {
     $pdo = get_db_connection();
+    if (!$pdo) return [];
 
     // Fetch user roles
     $stmt_roles = $pdo->prepare("

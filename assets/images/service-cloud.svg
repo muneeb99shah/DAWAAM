@@ -1,17 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="100%" height="100%">
   <defs>
-    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0284c7"/>
+    <linearGradient id="bgGradCloud" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0369a1"/>
       <stop offset="100%" stop-color="#0f172a"/>
     </linearGradient>
+    <filter id="glowCloud" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
   </defs>
-  <rect width="400" height="240" rx="12" fill="url(#bgGrad3)"/>
-  <!-- Cloud Icon -->
-  <path d="M 160 110 A 30 30 0 0 1 210 85 A 35 35 0 0 1 265 110 A 25 25 0 0 1 265 150 L 155 150 A 25 25 0 0 1 160 110 Z" fill="#38bdf8"/>
-  <!-- Sync Arrows -->
-  <path d="M 190 125 L 200 115 L 210 125 M 200 115 L 200 140" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Database Stack Below -->
-  <ellipse cx="200" cy="180" rx="40" ry="12" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
-  <path d="M 160 180 L 160 195 A 40 12 0 0 0 240 195 L 240 180" fill="#0369a1" stroke="#38bdf8" stroke-width="2"/>
-  <text x="200" y="222" text-anchor="middle" fill="#e0f2fe" font-family="sans-serif" font-weight="bold" font-size="14">Cloud Recovery & Mirroring</text>
+  <!-- Background -->
+  <rect width="400" height="240" rx="12" fill="url(#bgGradCloud)"/>
+
+  <!-- Background Orbit / Sync Arc -->
+  <ellipse cx="200" cy="115" rx="110" ry="45" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6,6" opacity="0.3"/>
+
+  <!-- Central Cloud Infrastructure Icon -->
+  <path d="M 155 105 A 32 32 0 0 1 210 78 A 38 38 0 0 1 268 105 A 28 28 0 0 1 268 145 L 150 145 A 26 26 0 0 1 155 105 Z" fill="#0284c7" stroke="#38bdf8" stroke-width="3" filter="url(#glowCloud)"/>
+  
+  <!-- Bi-directional Sync Arrows inside Cloud -->
+  <path d="M 195 105 L 205 95 L 215 105 M 205 95 L 205 125" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 215 120 L 205 130 L 195 120 M 205 130 L 205 100" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Local Database Rack Stack (Bottom Left) -->
+  <g transform="translate(60, 130)">
+    <rect x="0" y="0" width="55" height="18" rx="3" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <circle cx="10" cy="9" r="3" fill="#10b981"/>
+    <line x1="20" y1="9" x2="45" y2="9" stroke="#64748b" stroke-width="2"/>
+
+    <rect x="0" y="22" width="55" height="18" rx="3" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <circle cx="10" cy="31" r="3" fill="#10b981"/>
+    <line x1="20" y1="31" x2="45" y2="31" stroke="#64748b" stroke-width="2"/>
+
+    <rect x="0" y="44" width="55" height="18" rx="3" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <circle cx="10" cy="53" r="3" fill="#34d399"/>
+    <line x1="20" y1="53" x2="45" y2="53" stroke="#64748b" stroke-width="2"/>
+  </g>
+
+  <!-- Cloud Mirroring Target Database (Bottom Right) -->
+  <g transform="translate(285, 130)">
+    <ellipse cx="28" cy="8" rx="28" ry="8" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+    <path d="M 0 8 L 0 24 A 28 8 0 0 0 56 24 L 56 8" fill="#0369a1" stroke="#38bdf8" stroke-width="2"/>
+    <path d="M 0 24 L 0 40 A 28 8 0 0 0 56 40 L 56 24" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+    <circle cx="12" cy="24" r="2.5" fill="#34d399"/>
+    <circle cx="12" cy="40" r="2.5" fill="#34d399"/>
+  </g>
+
+  <!-- Dynamic Curved Connection Streams -->
+  <path d="M 115 150 Q 150 160 170 145" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="5,5"/>
+  <path d="M 285 150 Q 250 160 230 145" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="5,5"/>
 </svg>

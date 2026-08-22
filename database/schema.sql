@@ -293,9 +293,9 @@ INSERT INTO `service_categories` (`id`, `name`) VALUES
 
 -- Sample Services
 INSERT INTO `services` (`id`, `category_id`, `title`, `description`, `price`, `image_path`) VALUES
-(1, 1, 'Local Network Sync Setup', 'Configures high-speed local LAN and Wi-Fi synchronization allowing multi-device POS and operational continuity without internet connectivity.', 15000.00, 'assets/images/service-lan.jpg'),
-(2, 2, 'SMS Emergency Gateway Setup', 'Integrates Android SMS Gateway equipment for critical event notifications directly over SIM cellular towers during internet blackouts.', 12000.00, 'assets/images/service-sms.jpg'),
-(3, 1, 'Cloud Data Mirroring & Recovery', 'Provides automatic background record synchronization, conflict resolution, and central server backup when WAN access restores.', 20000.00, 'assets/images/service-cloud.jpg'),
-(4, 1, 'POS & Local Server Deployment', 'Full local hardware installation of Dawaam server software, database engine, and user permission hierarchies.', 25000.00, 'assets/images/service-pos.jpg');
+(1, 1, 'Local Network Sync Setup', 'Configures high-speed local LAN and Wi-Fi synchronization allowing multi-device POS and operational continuity without internet connectivity.', 15000.00, 'assets/images/service-lan.svg'),
+(2, 2, 'SMS Emergency Gateway Setup', 'Integrates Android SMS Gateway equipment for critical event notifications directly over SIM cellular towers during internet blackouts.', 12000.00, 'assets/images/service-sms.svg'),
+(3, 1, 'Cloud Data Mirroring & Recovery', 'Provides automatic background record synchronization, conflict resolution, and central server backup when WAN access restores.', 20000.00, 'assets/images/service-cloud.svg'),
+(4, 1, 'POS & Local Server Deployment', 'Full local hardware installation of Dawaam server software, database engine, and user permission hierarchies.', 25000.00, 'assets/images/service-pos.svg');
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -36,8 +36,8 @@ require_once __DIR__ . '/includes/header.php';
                         <a href="<?php echo BASE_URL; ?>/admin/login.php" class="btn btn-warning btn-lg fw-bold px-4 py-2 text-dark">
                             <i class="bi bi-speedometer2 me-2"></i> Staff & POS Admin Login
                         </a>
-                        <a href="<?php echo BASE_URL; ?>/test_db.php" class="btn btn-outline-light btn-lg px-4 py-2">
-                            <i class="bi bi-shield-check me-2"></i> System Health Status
+                        <a href="<?php echo BASE_URL; ?>/services.php" class="btn btn-outline-light btn-lg px-4 py-2">
+                            <i class="bi bi-gear-wide-connected me-2"></i> Explore Services
                         </a>
                     </div>
                 </div>
@@ -45,9 +45,9 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="p-4 bg-dark bg-opacity-40 border border-light border-opacity-25 rounded-4 backdrop-blur">
                         <i class="bi bi-shield-lock-fill display-1 d-block mb-3" style="color:#2dd4bf;"></i>
                         <h5 class="fw-bold text-white mb-2">Local LAN Server Active</h5>
-                        <p class="small text-white-50 mb-3">Connected devices operate seamlessly on local IP network.</p>
+                        <p class="small text-white-50 mb-3">Connected devices operate seamlessly on local network.</p>
                         <div class="p-2 bg-black bg-opacity-60 rounded font-monospace small text-success fw-bold border border-secondary border-opacity-50">
-                            <?php echo SERVER_LAN_IP; ?>:8000
+                            <i class="bi bi-check-circle-fill me-1"></i> System Status: Operational
                         </div>
                     </div>
                 </div>
