@@ -86,7 +86,7 @@ function render_pos_document($sale, $items, $doc_type = 'receipt', $custom_biz =
 
     ob_start();
     ?>
-    <div class="dw-pos-doc-wrapper dw-doc-mode-<?php echo htmlspecialchars($doc_type); ?>">
+    <div class="dawaam-receipt dw-pos-doc-wrapper dw-doc-mode-<?php echo htmlspecialchars($doc_type); ?>">
         
         <!-- 1. BUSINESS HEADER -->
         <div class="dw-doc-header text-center pb-2 mb-2 border-bottom border-dark border-opacity-50">

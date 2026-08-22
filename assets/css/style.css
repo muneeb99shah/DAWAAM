@@ -1505,9 +1505,10 @@ body.dw-drawer-open {
 }
 
 /* ==========================================================================
-   Thermal & Office POS Printable Document Layout Engine
+   Thermal & Office POS Printable Document Layout Engine (Strictly Scoped)
    ========================================================================== */
 
+/* Outer Paper Card Container for Sales Document Preview */
 .dw-doc-card-container {
     margin: 0 auto;
     width: 100%;
@@ -1521,12 +1522,12 @@ body.dw-drawer-open {
 
 .dw-doc-card-container.paper-format-80mm {
     max-width: 360px;
-    padding: 12px 14px;
+    padding: 14px 16px;
 }
 
 .dw-doc-card-container.paper-format-58mm {
     max-width: 275px;
-    padding: 8px 8px;
+    padding: 10px 10px;
 }
 
 .dw-doc-card-container.paper-format-a4 {
@@ -1539,8 +1540,8 @@ body.dw-drawer-open {
     padding: 18px 22px;
 }
 
-/* Document Reset & High-Contrast Thermal Hierarchy */
-.dw-pos-doc-wrapper {
+/* Strictly Scoped Receipt Wrapper */
+.dawaam-receipt {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
@@ -1551,54 +1552,71 @@ body.dw-drawer-open {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Contrast Boost for Thermal Printing & High-Resolution Display */
-.dw-pos-doc-wrapper .text-muted,
-.dw-pos-doc-wrapper .text-secondary {
+/* Contrast Boost inside .dawaam-receipt */
+.dawaam-receipt .text-muted,
+.dawaam-receipt .text-secondary {
     color: #374151 !important;
     font-weight: 500;
 }
 
-.dw-pos-doc-wrapper .text-dark {
+.dawaam-receipt .text-dark {
     color: #111827 !important;
 }
 
-.dw-pos-doc-wrapper strong,
-.dw-pos-doc-wrapper b {
+.dawaam-receipt strong,
+.dawaam-receipt b {
     color: #111827 !important;
     font-weight: 600;
 }
 
+/* Scoped Table Rules inside .dawaam-receipt */
+.dawaam-receipt table,
+.dawaam-receipt .dw-doc-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    margin: 0 !important;
+}
+
+.dawaam-receipt th,
+.dawaam-receipt td,
+.dawaam-receipt .dw-doc-table th,
+.dawaam-receipt .dw-doc-table td {
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+}
+
 /* 80mm Thermal Typography Adjustments */
-.paper-format-80mm .dw-pos-doc-wrapper {
+.paper-format-80mm .dawaam-receipt {
     font-size: 9.5px;
     line-height: 1.35;
 }
 
-.paper-format-80mm .dw-doc-biz-name {
+.paper-format-80mm .dawaam-receipt .dw-doc-biz-name {
     font-size: 17px;
     font-weight: 800;
     color: #111827 !important;
 }
 
-.paper-format-80mm .dw-doc-biz-sub {
+.paper-format-80mm .dawaam-receipt .dw-doc-biz-sub {
     font-size: 10.5px;
     font-weight: 600;
     color: #374151 !important;
 }
 
-.paper-format-80mm .dw-doc-biz-contact {
+.paper-format-80mm .dawaam-receipt .dw-doc-biz-contact {
     font-size: 9.5px;
     font-weight: 500;
     color: #374151 !important;
 }
 
-.paper-format-80mm .dw-doc-title {
+.paper-format-80mm .dawaam-receipt .dw-doc-title {
     font-size: 15px;
     font-weight: 800;
     color: #111827 !important;
 }
 
-.paper-format-80mm .dw-doc-section-title {
+.paper-format-80mm .dawaam-receipt .dw-doc-section-title {
     font-size: 9.5px;
     font-weight: 700;
     text-transform: uppercase;
@@ -1606,132 +1624,120 @@ body.dw-drawer-open {
     color: #374151 !important;
 }
 
-.paper-format-80mm .dw-doc-grand-total {
+.paper-format-80mm .dawaam-receipt .dw-doc-grand-total {
     font-size: 13px;
     font-weight: 800;
     color: #111827 !important;
 }
 
 /* 58mm Thermal Typography Adjustments */
-.paper-format-58mm .dw-pos-doc-wrapper {
+.paper-format-58mm .dawaam-receipt {
     font-size: 8.5px;
     line-height: 1.3;
 }
 
-.paper-format-58mm .dw-doc-biz-name {
+.paper-format-58mm .dawaam-receipt .dw-doc-biz-name {
     font-size: 13.5px;
     font-weight: 800;
     color: #111827 !important;
 }
 
-.paper-format-58mm .dw-doc-biz-sub {
+.paper-format-58mm .dawaam-receipt .dw-doc-biz-sub {
     font-size: 9.5px;
     font-weight: 600;
     color: #374151 !important;
 }
 
-.paper-format-58mm .dw-doc-biz-contact {
+.paper-format-58mm .dawaam-receipt .dw-doc-biz-contact {
     font-size: 8.5px;
     font-weight: 500;
     color: #374151 !important;
 }
 
-.paper-format-58mm .dw-doc-title {
+.paper-format-58mm .dawaam-receipt .dw-doc-title {
     font-size: 12.5px;
     font-weight: 800;
     color: #111827 !important;
 }
 
-.paper-format-58mm .dw-doc-section-title {
+.paper-format-58mm .dawaam-receipt .dw-doc-section-title {
     font-size: 8.5px;
     font-weight: 700;
     text-transform: uppercase;
     color: #374151 !important;
 }
 
-.paper-format-58mm .dw-doc-grand-total {
+.paper-format-58mm .dawaam-receipt .dw-doc-grand-total {
     font-size: 11px;
     font-weight: 800;
     color: #111827 !important;
 }
 
 /* Office A4 & A5 Typography Adjustments */
-.paper-format-a4 .dw-pos-doc-wrapper {
+.paper-format-a4 .dawaam-receipt {
     font-size: 13.5px;
     line-height: 1.5;
 }
 
-.paper-format-a4 .dw-doc-biz-name {
+.paper-format-a4 .dawaam-receipt .dw-doc-biz-name {
     font-size: 24px;
     font-weight: 800;
 }
 
-.paper-format-a4 .dw-doc-biz-sub {
+.paper-format-a4 .dawaam-receipt .dw-doc-biz-sub {
     font-size: 13.5px;
 }
 
-.paper-format-a4 .dw-doc-biz-contact {
+.paper-format-a4 .dawaam-receipt .dw-doc-biz-contact {
     font-size: 11.5px;
 }
 
-.paper-format-a4 .dw-doc-title {
+.paper-format-a4 .dawaam-receipt .dw-doc-title {
     font-size: 19px;
     font-weight: 800;
 }
 
-.paper-format-a4 .dw-doc-section-title {
+.paper-format-a4 .dawaam-receipt .dw-doc-section-title {
     font-size: 12.5px;
     font-weight: 700;
 }
 
-.paper-format-a4 .dw-doc-grand-total {
+.paper-format-a4 .dawaam-receipt .dw-doc-grand-total {
     font-size: 19px;
     font-weight: 800;
 }
 
-.paper-format-a5 .dw-pos-doc-wrapper {
+.paper-format-a5 .dawaam-receipt {
     font-size: 11.5px;
     line-height: 1.45;
 }
 
-.paper-format-a5 .dw-doc-biz-name {
+.paper-format-a5 .dawaam-receipt .dw-doc-biz-name {
     font-size: 19px;
     font-weight: 800;
 }
 
-.paper-format-a5 .dw-doc-biz-sub {
+.paper-format-a5 .dawaam-receipt .dw-doc-biz-sub {
     font-size: 11.5px;
 }
 
-.paper-format-a5 .dw-doc-biz-contact {
+.paper-format-a5 .dawaam-receipt .dw-doc-biz-contact {
     font-size: 10px;
 }
 
-.paper-format-a5 .dw-doc-title {
+.paper-format-a5 .dawaam-receipt .dw-doc-title {
     font-size: 16px;
     font-weight: 800;
 }
 
-.paper-format-a5 .dw-doc-section-title {
+.paper-format-a5 .dawaam-receipt .dw-doc-section-title {
     font-size: 10.5px;
     font-weight: 700;
 }
 
-.paper-format-a5 .dw-doc-grand-total {
+.paper-format-a5 .dawaam-receipt .dw-doc-grand-total {
     font-size: 16px;
     font-weight: 800;
-}
-
-/* Table resets for thermal document rendering */
-.dw-doc-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-.dw-doc-table th, .dw-doc-table td {
-    overflow-wrap: anywhere;
-    word-break: break-word;
 }
 
 /* Print CSS */

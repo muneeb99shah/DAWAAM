@@ -61,7 +61,7 @@ if (function_exists('render_mobile_navigation_drawer')) {
 ?>
 
 <!-- Local Offline JS Assets (Zero Internet CDN Dependencies) -->
-<script src="<?php echo BASE_URL; ?>/assets/js/bootstrap.bundle.min.js"></script>
-<script src="<?php echo BASE_URL; ?>/assets/js/app.js"></script>
+<script src="<?php echo BASE_URL; ?>/assets/js/bootstrap.bundle.min.js?v=1.0.6"></script>
+<script src="<?php echo BASE_URL; ?>/assets/js/app.js?v=1.0.6"></script>
 </body>
 </html>

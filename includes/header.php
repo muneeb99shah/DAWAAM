@@ -17,9 +17,9 @@ require_once __DIR__ . '/sidebar.php';
     <title><?php echo isset($page_title) ? sanitize($page_title) . ' - ' . APP_NAME : APP_NAME . ' | ' . APP_TAGLINE; ?></title>
     
     <!-- Local Offline CSS Assets (Zero Internet CDN Dependencies) -->
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/bootstrap-icons.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/bootstrap.min.css?v=1.0.6">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/bootstrap-icons.css?v=1.0.6">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css?v=1.0.6">
 </head>
 <body>
 <?php require_once __DIR__ . '/navbar.php'; ?>

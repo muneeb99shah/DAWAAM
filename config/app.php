@@ -36,7 +36,12 @@ function get_base_url() {
         return BASE_URL;
     }
     
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+    $is_https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || ($_SERVER['SERVER_PORT'] ?? 80) == 443
+        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+        || (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && strtolower($_SERVER['HTTP_X_FORWARDED_SSL']) === 'on');
+        
+    $protocol = $is_https ? 'https://' : 'http://';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
     
     $script_name = $_SERVER['SCRIPT_NAME'] ?? '';
