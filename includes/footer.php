@@ -48,11 +48,7 @@ $show_operational_layout = is_logged_in() && $is_admin_route;
 
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-white-50">
             <div>
-                &copy; <?php echo date('Y'); ?> <strong class="text-white"><?php echo APP_NAME; ?></strong>. Final Year Business Continuity System.
-            </div>
-            <div class="mt-2 mt-md-0">
-                <span class="badge bg-secondary me-2">Version <?php echo APP_VERSION; ?></span>
-                <span class="badge bg-success">Local-First Engine Active</span>
+                &copy; <?php echo date('Y'); ?> <strong class="text-white"><?php echo APP_NAME; ?></strong>.
             </div>
         </div>
     </div>
