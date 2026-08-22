@@ -55,6 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form_data['customer_name'] = trim($_POST['customer_name'] ?? 'Walk-in Customer');
     if (empty($form_data['customer_name'])) $form_data['customer_name'] = 'Walk-in Customer';
     $form_data['customer_phone'] = trim($_POST['customer_phone'] ?? '');
+    $form_data['customer_email'] = trim($_POST['customer_email'] ?? '');
+    $form_data['customer_address'] = trim($_POST['customer_address'] ?? '');
+    $form_data['customer_tax_id'] = trim($_POST['customer_tax_id'] ?? '');
     $form_data['discount_type'] = in_array($_POST['discount_type'] ?? '', ['fixed', 'percent'], true) ? $_POST['discount_type'] : 'fixed';
     $form_data['discount_val'] = max(0, (float)($_POST['discount_val'] ?? 0));
     $form_data['tax_percent'] = max(0, (float)($_POST['tax_percent'] ?? 0));
@@ -172,11 +175,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // A. Insert Master Sale Receipt Record
             $stmt_sale = $pdo->prepare("
                 INSERT INTO sales 
-                (sale_code, user_id, product_id, customer_name, customer_phone, quantity, unit_price, subtotal, 
+                (sale_code, user_id, product_id, customer_name, customer_phone, customer_email, customer_address, customer_tax_id, quantity, unit_price, subtotal, 
                  discount_type, discount_val, discount_amount, tax_amount, total_price, payment_method, payment_ref, 
                  amount_received, change_amount, remaining_amount, payment_status, sold_at, created_at)
                 VALUES 
-                (:sale_code, :user_id, :product_id, :cust_name, :cust_phone, :quantity, :unit_price, :subtotal, 
+                (:sale_code, :user_id, :product_id, :cust_name, :cust_phone, :cust_email, :cust_address, :cust_tax_id, :quantity, :unit_price, :subtotal, 
                  :disc_type, :disc_val, :disc_amount, :tax_amount, :total_price, :pay_method, :pay_ref, 
                  :amt_rec, :change_amt, :rem_amt, :pay_status, NOW(), NOW())
             ");
@@ -186,6 +189,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':product_id' => $primary_prod_id,
                 ':cust_name' => $form_data['customer_name'],
                 ':cust_phone' => $form_data['customer_phone'],
+                ':cust_email' => $form_data['customer_email'],
+                ':cust_address' => $form_data['customer_address'],
+                ':cust_tax_id' => $form_data['customer_tax_id'],
                 ':quantity' => $total_qty_sum,
                 ':unit_price' => $validated_cart[0]['unit_price'],
                 ':subtotal' => $subtotal,
