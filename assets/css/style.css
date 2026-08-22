@@ -748,8 +748,6 @@ thead.table-dark th,
 
 /* Hover State (Temporary Floating Overlay on Collapsed Sidebar) */
 @media (min-width: 768px) {
-    .dw-sidebar-outer-wrap:hover .dw-sidebar.dw-sidebar-collapsed,
-    .dw-sidebar.dw-sidebar-collapsed:hover,
     .dw-sidebar.dw-sidebar-hover-expanded {
         width: 240px !important;
         position: absolute !important;
@@ -810,17 +808,6 @@ thead.table-dark th,
     display: block !important;
 }
 
-@media (min-width: 768px) {
-    .dw-sidebar-outer-wrap:hover .dw-sidebar-search-wrap {
-        display: block !important;
-    }
-
-    .dw-sidebar-outer-wrap:hover .dw-sidebar-header {
-        justify-content: flex-start !important;
-        padding-left: 0.75rem !important;
-    }
-}
-
 /* Navigation Items Stack */
 .dw-sidebar-nav {
     display: flex;
@@ -858,19 +845,6 @@ thead.table-dark th,
     justify-content: flex-start !important;
 }
 
-@media (min-width: 768px) {
-    .dw-sidebar-outer-wrap:hover .dw-sidebar-link {
-        width: 100% !important;
-        height: 40px !important;
-        padding: 0 0.75rem !important;
-        justify-content: flex-start !important;
-    }
-
-    .dw-sidebar-outer-wrap:hover .dw-sidebar-icon {
-        margin-right: 0.75rem !important;
-    }
-}
-
 /* Icon */
 .dw-sidebar-icon {
     font-size: 1.15rem;
@@ -903,12 +877,6 @@ thead.table-dark th,
     display: block !important;
 }
 
-@media (min-width: 768px) {
-    .dw-sidebar-outer-wrap:hover .dw-sidebar-label {
-        display: block !important;
-    }
-}
-
 /* Right Chevron Arrow in Expanded Mode */
 .dw-sidebar-arrow {
     font-size: 0.75rem;
@@ -923,22 +891,10 @@ thead.table-dark th,
     display: inline-block !important;
 }
 
-@media (min-width: 768px) {
-    .dw-sidebar-outer-wrap:hover .dw-sidebar-arrow {
-        display: inline-block !important;
-    }
-}
-
 /* Hide floating tooltip when labels are visible */
 .dw-sidebar-pinned .dw-sidebar-tooltip,
 .dw-sidebar-hover-expanded .dw-sidebar-tooltip {
     display: none !important;
-}
-
-@media (min-width: 768px) {
-    .dw-sidebar-outer-wrap:hover .dw-sidebar-tooltip {
-        display: none !important;
-    }
 }
 
 /* Hover & Active States */

@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const outerWrap = document.getElementById('dw-sidebar-outer-wrap');
     const toggleBtn = document.getElementById('dw-sidebar-toggle-btn');
     const searchInput = document.getElementById('dw-sidebar-search-input');
+    let ignoreHoverUntilLeave = false;
 
     if (sidebar && toggleBtn) {
         // Read saved user pinned preference from localStorage (default: unpinned / collapsed)
@@ -78,12 +79,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Hover Temporary Expansion Overlay Handlers (Desktop & Tablet >= 768px)
         sidebar.addEventListener('mouseenter', function () {
-            if (!sidebar.classList.contains('dw-sidebar-pinned') && window.innerWidth >= 768) {
+            if (!ignoreHoverUntilLeave && !sidebar.classList.contains('dw-sidebar-pinned') && window.innerWidth >= 768) {
                 sidebar.classList.add('dw-sidebar-hover-expanded');
             }
         });
 
         sidebar.addEventListener('mouseleave', function () {
+            ignoreHoverUntilLeave = false;
             if (!sidebar.classList.contains('dw-sidebar-pinned') && window.innerWidth >= 768) {
                 sidebar.classList.remove('dw-sidebar-hover-expanded');
                 if (searchInput && searchInput.value) {
@@ -94,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         function pinSidebar() {
+            ignoreHoverUntilLeave = false;
             sidebar.classList.remove('dw-sidebar-collapsed', 'dw-sidebar-hover-expanded');
             sidebar.classList.add('dw-sidebar-pinned');
             if (outerWrap) outerWrap.classList.add('dw-sidebar-pinned-wrap');
@@ -117,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 searchInput.value = '';
                 filterSidebarItems('');
             }
+            ignoreHoverUntilLeave = true;
         }
 
         if (searchInput) {
